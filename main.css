@@ -1,0 +1,117 @@
+.loginCentered {
+    display: flex;
+    align-self: center;
+    justify-self: center;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.main {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
+    height:100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+.accentColorButton {
+    border-radius: 20px;
+    border: 0;
+    padding: 15px;
+    font-size: large;
+    background-color: #ff0000;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.top {
+    margin-bottom: 30vh;
+}
+
+.commonButton {
+    border-radius: 20px;
+    border: 0;
+    padding: 15px;
+    font-size: large;
+    background-color: #ff770000;
+}
+
+* {
+    font-family: "Instrument Sans", sans-serif;
+}
+
+body {
+    border: 0;
+    margin: 0;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(*) {
+  animation-duration: .33s;
+}
+
+::view-transition-old(root) {
+  animation: .33s ease-in both leave;
+}
+
+::view-transition-new(root) {
+  animation: .33s ease-in both enter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) {
+    animation-duration: 0s;
+  }
+}
+.watermark {
+  width: 100px;
+  align-self: center;
+}
+
+.header {
+  display: flex;
+  position: fixed;
+  width: 100%;
+  padding: 20px;
+  padding-top: 15px;
+  align-content: center;
+  align-content: center ;
+}
+
+.title {
+  width: 100vw;
+  text-align: center;
+  font-weight: 500;
+  font-size: 20px;
+
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.content {
+  padding: 10px;
+  padding-top: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.nameInput{
+  border-radius: 20px;
+  padding: 20px;
+  outline-color: #ff0000;
+  border: 0;
+  background-color: #F6F6F6;
+  font-size: 17px;
+}
