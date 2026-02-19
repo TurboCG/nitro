@@ -22,7 +22,7 @@ function setProps() {
 
 async function loadStats() {
     try {
-        const response = await fetch(`${API_URL}/api/estadisticas/${usuarioActual.id}`);
+        const response = await fetch(`${API_URL}/api/estadisticas/${usuarioStr.id}`);
         const stats = await response.json();
 
         if (totalAutos) totalAutos.textContent = stats.total_autos;
