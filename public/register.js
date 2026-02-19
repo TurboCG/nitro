@@ -1,4 +1,4 @@
-const API_URL = 'https://nitro-api-0hw3.onrender.com/'; // Producción
+const API_URL = 'https://nitro-api-0hw3.onrender.com'; // Producción
 function mostrarError(mensaje) {
     alert('❌ ' + mensaje);
 }
