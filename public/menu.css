@@ -65,8 +65,7 @@ body {
 
 .BottomButton {
     width: 100%;
-    background-color: #0051ff;
-    color: #FFF;
+    background-color: rgb(255, 116, 116);
     border-radius: 20px;       
     padding: 20px;
     display: flex;
@@ -89,4 +88,13 @@ body {
     backdrop-filter: blur(10px);
     left: 25%;
     right: 25%;
+}
+
+.buttonYellow {
+    background-color: #ffa959;
+}
+/* <script src="menu.js"></script> */
+
+h1, h3 {
+    font-weight: 500;
 }
