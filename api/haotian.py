@@ -1,8 +1,8 @@
 import os
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import psycopg
+from psycopg.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 import logging
@@ -19,9 +19,9 @@ CORS(app, origins=['https://nitro-f68k.onrender.com/', "https://nitro-api-0hw3.o
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 def get_db_connection():
-    """Conectar a NeonDB"""
+    """Conectar a NeonDB con psycopg 3.x"""
     try:
-        conn = psycopg2.connect(DATABASE_URL)
+        conn = psycopg.connect(DATABASE_URL)
         return conn
     except Exception as e:
         logger.error(f"Error conectando a DB: {e}")
@@ -50,7 +50,8 @@ def login():
         if not conn:
             return jsonify({"success": False, "error": "Error de conexión a DB"}), 500
         
-        cur = conn.cursor(cursor_factory=RealDictCursor)
+        # En psycopg 3, usamos row_factory para obtener diccionarios
+        cur = conn.cursor(row_factory=dict_row)
         cur.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
         user = cur.fetchone()
         
@@ -87,7 +88,7 @@ def get_autos():
         if not conn:
             return jsonify({"error": "Error de conexión"}), 500
         
-        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur = conn.cursor(row_factory=dict_row)
         cur.execute("""
             SELECT * FROM autos 
             WHERE usuario_id = %s 
@@ -217,7 +218,7 @@ def delete_auto(auto_id):
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    """Registrar nuevo mecánico (solo para admin)"""
+    """Registrar nuevo mecánico"""
     try:
         data = request.json
         nombre = data.get('nombre')
@@ -251,7 +252,7 @@ def register():
                 "message": "Usuario creado correctamente"
             }), 201
             
-        except psycopg2.errors.UniqueViolation:
+        except psycopg.errors.UniqueViolation:  # 👈 Cambio aquí
             return jsonify({"error": "El email ya está registrado"}), 400
         finally:
             cur.close()
@@ -269,7 +270,7 @@ def get_estadisticas(usuario_id):
         if not conn:
             return jsonify({"error": "Error de conexión"}), 500
         
-        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur = conn.cursor(row_factory=dict_row)
         
         # Total de autos
         cur.execute("SELECT COUNT(*) as total FROM autos WHERE usuario_id = %s", (usuario_id,))
