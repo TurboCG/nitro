@@ -1,6 +1,7 @@
 const API_URL = 'https://nitro-api-0hw3.onrender.com'; 
 const nombreMecanico = document.getElementById('nombreMecanico');
 const totalAutos = document.getElementById('cars');
+const autosPendientes = document.getElementById('carsD');
 const usuarioStr = sessionStorage.getItem('usuarioActual');
 const usuarioActual = sessionStorage.getItem("userID")
 function setProps() {
