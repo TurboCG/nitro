@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'clave-secreta-para-taller')  # Cambiar en producción
-CORS(app, origins=['https://nitro-f68k.onrender.com/', "https://nitro-api-0hw3.onrender.com/"])
+CORS(app, origins=['https://nitro-f68k.onrender.com', 'https://nitro-api-0hw3.onrender.com'])
+
 
 # Configuración de la base de datos (NeonDB)
 DATABASE_URL = os.environ.get('DATABASE_URL')
@@ -36,6 +37,13 @@ def home():
     })
 
 @app.route('/api/login', methods=['POST'])
+def handle_options_login():
+    response = jsonify({'status': 'ok'})
+    response.headers.add('Access-Control-Allow-Origin', 'https://nitro-f68k.onrender.com')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response, 200
 def login():
     """Login de mecánicos"""
     try:
@@ -217,6 +225,16 @@ def delete_auto(auto_id):
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/register', methods=['POST'])
+def handle_options_register():
+    """Manejar preflight CORS para registro"""
+    response = jsonify({'status': 'ok'})
+    response.headers.add('Access-Control-Allow-Origin', 'https://nitro-f68k.onrender.com')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    response.headers.add('Access-Control-Max-Age', '3600')
+    return response, 200
+
 def register():
     """Registrar nuevo mecánico"""
     try:
