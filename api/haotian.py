@@ -253,7 +253,7 @@ def register():
             cur.execute("""
                 INSERT INTO usuarios (nombre, apellido, dni, email, password) 
                 VALUES (%s, %s, %s, %s, %s)
-                RETURNING id, nombre, email
+                RETURNING id, nombre, apellido, dni, email
             """, (nombre, apellido, dni, email, hashed_password))
             
             new_user = cur.fetchone()
