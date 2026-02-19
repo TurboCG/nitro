@@ -27,7 +27,17 @@ def get_db_connection():
     except Exception as e:
         logger.error(f"Error conectando a DB: {e}")
         return None
-
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = jsonify({'status': 'preflight'})
+        response.headers.add('Access-Control-Allow-Origin', 'https://nitro-f68k.onrender.com')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        response.headers.add('Access-Control-Max-Age', '3600')
+        return response, 200
+    
 @app.route('/', methods=['GET'])
 def home():
     return jsonify({
@@ -37,13 +47,6 @@ def home():
     })
 
 @app.route('/api/login', methods=['POST'])
-def handle_options_login():
-    response = jsonify({'status': 'ok'})
-    response.headers.add('Access-Control-Allow-Origin', 'https://nitro-f68k.onrender.com')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response, 200
 def login():
     """Login de mecánicos"""
     try:
@@ -225,16 +228,6 @@ def delete_auto(auto_id):
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/register', methods=['POST'])
-def handle_options_register():
-    """Manejar preflight CORS para registro"""
-    response = jsonify({'status': 'ok'})
-    response.headers.add('Access-Control-Allow-Origin', 'https://nitro-f68k.onrender.com')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    response.headers.add('Access-Control-Max-Age', '3600')
-    return response, 200
-
 def register():
     """Registrar nuevo mecánico"""
     try:
