@@ -22,16 +22,38 @@ function setProps() {
 
 async function loadStats() {
     try {
-        const response = await fetch(`${API_URL}/api/estadisticas/${usuarioActual}`);
-        const stats = await response.json();
-
-        if (totalAutos) totalAutos.textContent = stats.total_autos;
+        // Obtener usuario del sessionStorage
+        const usuarioStr = sessionStorage.getItem('usuarioActual');
+        if (!usuarioStr) {
+            console.log('No hay usuario logueado');
+            return;
+        }
         
-        const listo = stats.por_estado.find(e => e.estado === 'listo');
+        const usuario = JSON.parse(usuarioStr);
+        const userId = usuario.id;  // ✅ El ID está dentro del objeto usuario
+        
+        console.log('Cargando stats para usuario:', userId);
+        
+        const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const stats = await response.json();
+        console.log('Estadísticas recibidas:', stats);
+
+        if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
+        
+        // Buscar estado 'listo' (o el nombre que uses en tu DB)
+        const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
         if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
         
     } catch(error) {
-        console.log('Error cargando estadísticas:', error);
+        console.error('Error cargando estadísticas:', error);
+        // Opcional: mostrar mensaje amigable al usuario
+        if (totalAutos) totalAutos.textContent = 'Error';
+        if (autosPendientes) autosPendientes.textContent = 'Error';
     }
 }
 
