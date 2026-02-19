@@ -48,29 +48,41 @@ def home():
 
 @app.route('/api/login', methods=['POST'])
 def login():
-    """Login de mecánicos"""
+    """Login de mecánicos (con email o DNI)"""
     try:
         data = request.json
-        email = data.get('email')
+        print("📥 Datos recibidos en API:", data)  # Log para debug
+        
+        # El frontend envía 'dniEmail' (puede ser DNI o email)
+        dniEmail = data.get('dniEmail')
         password = data.get('password')
         
-        if not email or not password:
-            return jsonify({"success": False, "error": "Email y contraseña requeridos"}), 400
+        # Validación básica
+        if not dniEmail or not password:
+            return jsonify({
+                "success": False, 
+                "error": "DNI/Email y contraseña requeridos"
+            }), 400
         
         conn = get_db_connection()
         if not conn:
             return jsonify({"success": False, "error": "Error de conexión a DB"}), 500
         
-        # En psycopg 3, usamos row_factory para obtener diccionarios
         cur = conn.cursor(row_factory=dict_row)
-        cur.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
-        user = cur.fetchone()
         
+        # Buscar por email O por dni (usando OR)
+        cur.execute("""
+            SELECT * FROM usuarios 
+            WHERE email = %s OR dni = %s
+        """, (dniEmail, dniEmail))
+        
+        user = cur.fetchone()
         cur.close()
         conn.close()
         
+        # Verificar si encontró usuario y la contraseña coincide
         if user and check_password_hash(user['password'], password):
-            # No enviar la contraseña
+            # No enviar la contraseña al frontend
             del user['password']
             return jsonify({
                 "success": True,
@@ -80,11 +92,11 @@ def login():
         else:
             return jsonify({
                 "success": False, 
-                "error": "Email o contraseña incorrectos"
+                "error": "DNI/Email o contraseña incorrectos"
             }), 401
             
     except Exception as e:
-        logger.error(f"Error en login: {e}")
+        print(f"❌ Error en login: {e}")  # Log para debug
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route('/api/autos', methods=['GET'])
