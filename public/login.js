@@ -2,7 +2,15 @@ const API_URL = 'https://nitro-api-0hw3.onrender.com'; // Producción
 function mostrarError(mensaje) {
     alert('❌ ' + mensaje);
 }
+function hideSpinner() {
+    document.getElementById("spinner").style.display = "none"
+    document.getElementById("labelButton").style.display = "block"
+}
 
+function showSpinner() {
+    document.getElementById("spinner").style.display = "block"
+    document.getElementById("labelButton").style.display = "none"
+}
 function mostrarExito(mensaje) {
     alert('✅ ' + mensaje);
 }
@@ -16,8 +24,7 @@ async function login() {
             mostrarError('Completa todos los campos');
             return;
         }
-        document.getElementById("spinner").style.display = "block"
-        document.getElementById("labelButton").style.display = "none"
+        showSpinner();
         const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -35,15 +42,17 @@ async function login() {
             sessionStorage.setItem('userID', data.user.id);
             // Mostrar mensaje de bienvenida
             mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
-            
+            hideSpinner();
             // Redirigir al menú principal
             window.location.href = 'menu.html';
         } else {
             mostrarError(data.error || 'Credenciales incorrectas');
+            hideSpinner();
         }
     } catch(error) {
         console.error('Error en login:', error);
         mostrarError('Error de conexión: ' + error.message);
+        hideSpinner();
     }
 }
 document.getElementById("button").onclick = login;

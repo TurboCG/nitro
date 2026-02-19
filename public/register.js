@@ -1,4 +1,13 @@
 const API_URL = 'https://nitro-api-0hw3.onrender.com'; // Producción
+function hideSpinner() {
+    document.getElementById("spinner").style.display = "none"
+    document.getElementById("labelButton").style.display = "block"
+}
+
+function showSpinner() {
+    document.getElementById("spinner").style.display = "block"
+    document.getElementById("labelButton").style.display = "none"
+}
 function mostrarError(mensaje) {
     alert('❌ ' + mensaje);
 }
@@ -33,8 +42,7 @@ async function registrarMecanico() {
             mostrarError('La contraseña debe tener al menos 8 caracteres');
             return;
         }
-        document.getElementById("spinner").style.display = "block"
-        document.getElementById("labelButton").style.display = "none"
+        showSpinner();
         const response = await fetch(`${API_URL}/api/register`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -50,7 +58,7 @@ async function registrarMecanico() {
         const data = await response.json();
         
         if (data.success) {
-            mostrarExito('✅ Mecánico registrado correctamente');
+            mostrarExito('✅ Registrado correctamente, vuelve a el inicio para iniciar sesióm.');
             
             // Limpiar formulario
             document.getElementById('regNombre').value = '';
