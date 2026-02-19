@@ -7,6 +7,7 @@ function mostrarExito(mensaje) {
     alert('✅ ' + mensaje);
 }
 async function login() {
+    
     try {
         const dniEmail = document.getElementById('dniEmail').value.trim();
         const password = document.getElementById('password').value;
@@ -15,7 +16,8 @@ async function login() {
             mostrarError('Completa todos los campos');
             return;
         }
-        
+        document.getElementById("spinner").style.display = "block"
+        document.getElementById("labelButton").style.display = "none"
         const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

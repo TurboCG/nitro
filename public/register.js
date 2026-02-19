@@ -33,7 +33,8 @@ async function registrarMecanico() {
             mostrarError('La contraseña debe tener al menos 8 caracteres');
             return;
         }
-        
+        document.getElementById("spinner").style.display = "block"
+        document.getElementById("labelButton").style.display = "none"
         const response = await fetch(`${API_URL}/api/register`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

@@ -31,7 +31,7 @@ async function loadStats() {
         }
         
         const usuario = JSON.parse(usuarioStr);
-        const userId = usuario.id;  // ✅ El ID está dentro del objeto usuario
+        const userId = usuario.id; 
         
         console.log('Cargando stats para usuario:', userId);
         
