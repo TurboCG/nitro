@@ -18,44 +18,53 @@ async function login() {
         
         console.log("🔍 Intentando login con:", dniEmail);
         
+        // 🔥 DEBUG: Ver qué se envía exactamente
+        const payload = {
+            dniEmail: dniEmail,
+            password: password
+        };
+        console.log("📦 Payload a enviar:", JSON.stringify(payload, null, 2));
+        
         const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                dniEmail: dniEmail,
-                password: password
-            })
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
         });
         
-        const data = await response.json();
+        console.log("📥 Response status:", response.status);
         
-        if (data.success) {
-            usuarioActual = data.user;
+        // Leer la respuesta como texto primero para debug
+        const textResponse = await response.text();
+        console.log("📄 Respuesta raw:", textResponse);
+        
+        // Intentar parsear como JSON
+        try {
+            const data = JSON.parse(textResponse);
+            console.log("✅ Data parseada:", data);
             
-            // Ocultar login, mostrar dashboard
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            
-            // Mostrar nombre del mecánico
-            document.getElementById('nombreMecanico').textContent = 
-                `${usuarioActual.nombre} ${usuarioActual.apellido || ''}`;
-            
-            // Cargar datos
-            cargarAutos();
-            cargarEstadisticas();
-            
-            // Limpiar campo de login
-            document.getElementById('dniEmail').value = '';
-            document.getElementById('password').value = '';
-            
-            mostrarExito(`¡Bienvenido ${usuarioActual.nombre}!`);
-        } else {
-            mostrarError(data.error || 'Credenciales incorrectas');
+            if (response.ok && data.success) {
+                usuarioActual = data.user;
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('nombreMecanico').textContent = 
+                    `${usuarioActual.nombre} ${usuarioActual.apellido || ''}`;
+                cargarAutos();
+                cargarEstadisticas();
+                document.getElementById('dniEmail').value = '';
+                document.getElementById('password').value = '';
+                mostrarExito(`¡Bienvenido ${usuarioActual.nombre}!`);
+            } else {
+                mostrarError(data.error || 'Error en login');
+            }
+        } catch(e) {
+            console.error("❌ No es JSON válido:", textResponse);
+            mostrarError('Error inesperado del servidor');
         }
+        
     } catch(error) {
         console.error('❌ Error en login:', error);
         mostrarError('Error de conexión: ' + error.message);
     }
 }
-
-document.getElementById("button").onclick = login;
