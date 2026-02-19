@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 import psycopg
-from psycopg.extras import RealDictCursor
+from psycopg.rows import dict_row
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 import logging
