@@ -68,3 +68,4 @@ async function login() {
         mostrarError('Error de conexión: ' + error.message);
     }
 }
+document.getElementById("button").onclick = login;
