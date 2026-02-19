@@ -14,7 +14,6 @@ function setProps() {
     // Mostrar en el HTML
     document.getElementById('nombreMecanico').textContent = usuario.nombre;
     } else {
-        // No hay usuario, redirigir al login
         window.location.href = 'index.html';
     }
 }
