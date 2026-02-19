@@ -30,7 +30,7 @@ async function login() {
         if (data.success) {
             // Guardar datos del usuario en sessionStorage para usarlos en menu.html
             sessionStorage.setItem('usuarioActual', JSON.stringify(data.user));
-            
+            sessionStorage.setItem('userID', data.user.id);
             // Mostrar mensaje de bienvenida
             mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
             
