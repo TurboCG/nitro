@@ -16,12 +16,14 @@ function setProps() {
     } else {
         window.location.href = 'index.html';
     }
+    loadStats();
 }
 
 async function loadStats() {
     try {
         const response = await fetch(`${API_URL}/api/estadisticas/${usuarioActual.id}`);
         const stats = await response.json();
+
         if (totalAutos) totalAutos.textContent = stats.total_autos;
         
         const listo = stats.por_estado.find(e => e.estado === 'listo');
