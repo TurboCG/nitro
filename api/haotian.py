@@ -233,7 +233,9 @@ def register():
     try:
         data = request.json
         nombre = data.get('nombre')
+        apellido = data.get('apellido')
         email = data.get('email')
+        dni = data.get('dni')
         password = data.get('password')
         
         if not all([nombre, email, password]):
@@ -249,17 +251,17 @@ def register():
         cur = conn.cursor()
         try:
             cur.execute("""
-                INSERT INTO usuarios (nombre, email, password) 
-                VALUES (%s, %s, %s)
+                INSERT INTO usuarios (nombre, apellido, dni, email, password) 
+                VALUES (%s, %s, %s, %s, %s)
                 RETURNING id, nombre, email
-            """, (nombre, email, hashed_password))
+            """, (nombre, apellido, dni, email, hashed_password))
             
             new_user = cur.fetchone()
             conn.commit()
             
             return jsonify({
                 "success": True,
-                "user": {"id": new_user[0], "nombre": new_user[1], "email": new_user[2]},
+                "user": {"id": new_user[0], "nombre": new_user[1], "apellido": new_user[2], "dni": new_user[3], "email": new_user[4],},
                 "message": "Usuario creado correctamente"
             }), 201
             
