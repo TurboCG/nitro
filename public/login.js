@@ -1,5 +1,11 @@
 const API_URL = 'https://nitro-api-0hw3.onrender.com'; // Producción
+function mostrarError(mensaje) {
+    alert('❌ ' + mensaje);
+}
 
+function mostrarExito(mensaje) {
+    alert('✅ ' + mensaje);
+}
 async function login() {
     try {
         const dniEmail = document.getElementById('dniEmail').value.trim();
