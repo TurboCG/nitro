@@ -102,9 +102,11 @@ h1, h3 {
     
     position:absolute;
     width: stretch;
-    height: stretch;
+    height: 90%;
     top: 0;
-    border-radius: 20px;
+    border-radius: 35px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     border: #00000017 inset 1px;
     background-color: rgba(242, 242, 242, 0.76);
     /* justify-items: center; */
@@ -144,7 +146,7 @@ h1, h3 {
     color: #000;
     background-color: #ffffff9a;
     border: 0;
-    border-radius: 20px;
+    border-radius: 6px;
 }
 
 .cardLogin {
@@ -185,7 +187,7 @@ h1, h3 {
     transform: translateY(100vh); /* Posición inicial */    
   }
   to {
-    transform: translateY(20px); /* Posición final (arriba) */
+    transform: translateY(5%); /* Posición final (arriba) */
   }
 }
 
@@ -198,4 +200,20 @@ h1, h3 {
     backdrop-filter: blur(32px);
     background-color: #000000a8;
   }
+}
+
+.topCorner {
+    border-radius: 20px;
+    border-bottom-left-radius: 6px ;
+    border-bottom-right-radius: 6px ;
+}
+
+.bottomCorner {
+    border-radius: 20px;
+    border-top-left-radius: 6px ;
+    border-top-right-radius: 6px ;
+}
+
+.blurLabel {
+    filter: blur(15px);
 }
