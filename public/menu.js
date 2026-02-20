@@ -53,8 +53,8 @@ async function loadStats() {
         // Buscar estado 'listo' (o el nombre que uses en tu DB)
         const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
         if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
-        document.getElementById("autosPendientes").classList.remove("blurLabel");
-        document.getElementById("totalAutos").classList.remove("blurLabel");
+        autosPendientes.classList.remove("blurLabel");
+        totalAutos.classList.remove("blurLabel");
     } catch(error) {
         console.error('Error cargando estadísticas:', error);
         // Opcional: mostrar mensaje amigable al usuario
