@@ -84,8 +84,8 @@ body {
     height: 65px;
     width: 190px;
     border-radius: 32390px;
-    box-shadow: rgba(14, 63, 126, 0.06) 0px 0px 0px 1px, rgba(42, 51, 70, 0.03) 0px 1px 1px -0.5px, rgba(42, 51, 70, 0.04) 0px 2px 2px -1px, rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px, rgba(42, 51, 70, 0.03) 0px 5px 5px -2.5px, rgba(42, 51, 70, 0.03) 0px 10px 10px -5px, rgba(42, 51, 70, 0.03) 0px 24px 24px -8px;
-    background-color: #ffffffa4;
+    border: #0000001c inset 1px;
+    box-shadow:rgb(17 12 46 / 45%) 0px 48px 100px 0px;
     backdrop-filter: blur(10px);
     justify-self: center;
 }
@@ -217,4 +217,45 @@ h1, h3 {
 
 .blurLabel {
     filter: blur(15px);
+}
+
+.titleCardLabel {
+    margin: 12px
+}
+
+.addCarExpand {
+    border-radius: 20px;
+    font-size: 16px;
+    padding: 20px;
+    outline-color: #ff0000;
+    border: 0;
+    background-color: #ffffffa9;
+    width: stretch;
+    display: flex;
+
+}
+
+
+.inputInformation {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: stretch;
+    padding-top: 5px;
+}
+
+.accentColorButton {
+    border-radius: 20px;
+    border: 0;
+    padding: 15px;
+    font-size: large;
+    background-color: #ff0000;
+    font-weight: 600;
+    color: #FFFFFF;
+    align-items: center;
+}
+
+.calendarIcon {
+    position: absolute;
+    right: 45px;
 }

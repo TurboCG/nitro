@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="doubleRoll">
-            <button class="BottomButton">Agregar Nuevo</button>
+            <button class="BottomButton" id="addCarPiolaButton">Agregar Nuevo</button>
             <button class="BottomButton buttonYellow">Historial</button>
         </div>
         <h3>Ultimos agregados</h1>
@@ -38,12 +38,11 @@
     </div>
     <div id="blackBlurBg"class="blackBG"></div>
     <div class="loginOptions hidden" id="accountOptionsMenu">
-        
         <div class="cardLogin">
             <img src="resources/back.svg" alt="" srcset="" class="backButton" id="backk">
             <div class="headerCard">
                 <img src="resources/pfp.png" class="pfp">
-                <h2 id="nombreMecanico">Q</h2>
+                <h2 id="nombreMecanico2">Q</h2>
             </div>
             <button class="optionCardButton topCorner">Configuración</button>
             <button class="optionCardButton">Historial</button>
@@ -54,7 +53,36 @@
             <h5>v.1.0.0-alpha turbo-mf-motores vv吴翔</h5>
         </div>
     </div>
-
+    <div class="loginOptions hidden" id="carOptionsMenu">
+        <div class="cardLogin">
+            <img src="resources/back.svg" alt="" srcset="" class="backButton" id="backAddCar">
+            <div class="headerCard">
+                <h3 class="titleCardLabel">Añadir un auto</h2>
+            </div>
+            <div class="inputInformation">
+                <input type="text" placeholder="Patente" maxlength="7" class="addCarExpand">
+                <input type="text" placeholder="Marca" class="addCarExpand"> 
+                <input type="text" placeholder="Modelo" class="addCarExpand">
+                <input type="text" placeholder="Kilometraje" class="addCarExpand">
+                <input type="text" placeholder="Año" class="addCarExpand">
+                <input type="tel" placeholder="Arreglos" class="addCarExpand" ex>
+                <select name="Estado" id="" class="addCarExpand">
+                    <option value="listo">Listo</option>
+                    <option value="progreso">En progreso</option>
+                </select>
+                <button class="addCarExpand" id="invokeDate">
+                    <img src="resources/calendar.svg" alt="" class="calendarIcon">
+                    <span id="spanDateLabelButton">Fecha de entrada</span>
+                </button>
+                <input type="date" name="" id="dateInput" style="display: none;">
+                <button class="accentColorButton">Continuar</button>
+            </div>
+            <div class="inputInformation confirm" style="display:none;">
+                <h1>¿Publicar?</h1>
+                <button id="button" type="button" class="accentColorButton"><span id="labelButton">Publicar</span><img src="resources/spinner.svg" class="spinner" id="spinner"></button>
+            </div>
+        </div>
+    </div>
     <script src="menu.js"></script>
 </body>
 </html>

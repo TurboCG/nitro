@@ -37,13 +37,10 @@ async function login() {
         const data = await response.json();
         
         if (data.success) {
-            // Guardar datos del usuario en sessionStorage para usarlos en menu.html
             sessionStorage.setItem('usuarioActual', JSON.stringify(data.user));
             sessionStorage.setItem('userID', data.user.id);
-            // Mostrar mensaje de bienvenida
             mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
             hideSpinner();
-            // Redirigir al menú principal
             window.location.href = 'menu.html';
         } else {
             document.getElementById("errorPassw").style.display = "flex"

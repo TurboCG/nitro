@@ -19,6 +19,7 @@ function setProps() {
     
     // Mostrar en el HTML
     document.getElementById('nombreMecanico').textContent = usuario.nombre;
+    document.getElementById('nombreMecanico2').textContent = usuario.nombre;
     } else {
         // window.location.href = 'index.html';
     }
@@ -27,7 +28,6 @@ function setProps() {
 
 async function loadStats() {
     try {
-        // Obtener usuario del sessionStorage
         const usuarioStr = sessionStorage.getItem('usuarioActual');
         if (!usuarioStr) {
             console.log('No hay usuario logueado');
@@ -49,16 +49,12 @@ async function loadStats() {
         console.log('Estadísticas recibidas:', stats);
 
         if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
-        
-        // Buscar estado 'listo' (o el nombre que uses en tu DB)
         const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
         if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
         autosPendientes.classList.remove("blurLabel");
         totalAutos.classList.remove("blurLabel");
     } catch(error) {
-        console.error('Error cargando estadísticas:', error);
-        // Opcional: mostrar mensaje amigable al usuario
-        
+        console.error('Error cargando estadísticas:', error);  
     }
 }
 function showHideMenuProfile() {
@@ -67,10 +63,32 @@ function showHideMenuProfile() {
     document.getElementById("accountOptionsMenu").classList.toggle("openxpp");
     document.getElementById("blackBlurBg").classList.toggle("blurbg");
 }
+
+function showHideAddCar() {
+    const menu = document.getElementById("carOptionsMenu");
+    menu.classList.toggle("hidden");
+    document.getElementById("carOptionsMenu").classList.toggle("openxpp");
+    document.getElementById("blackBlurBg").classList.toggle("blurbg");
+}
+
+const button = document.getElementById('invokeDate');
+const dateInput = document.getElementById('dateInput');
+const dateInputLabel = document.getElementById("spanDateLabelButton")
+button.addEventListener('click', () => {
+// Esto invoca el diálogo del date input directamente
+    dateInput.showPicker(); 
+});
+
+// Opcional: ver qué fecha eligió el usuario
+dateInput.addEventListener('change', () => {
+    dateInputLabel.textContent = dateInput.value
+});
 setProps();
 
 function closeSession() {
-    
+
 }
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
+document.getElementById("backAddCar").onclick = showHideAddCar;
+document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
