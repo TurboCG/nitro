@@ -5,6 +5,10 @@ const autosPendientes = document.getElementById('carsD');
 const usuarioStr = sessionStorage.getItem('usuarioActual');
 const usuarioActual = sessionStorage.getItem("userID")
 function setProps() {
+    const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
+    const indiceAleatorio = Math.floor(Math.random() * opciones.length);
+    const seleccion = opciones[indiceAleatorio];
+    document.getElementById("saludo").textContent = seleccion;
     if (usuarioStr) {
     const usuario = JSON.parse(usuarioStr);
     console.log('Nombre:', usuario.nombre);
@@ -16,7 +20,7 @@ function setProps() {
     // Mostrar en el HTML
     document.getElementById('nombreMecanico').textContent = usuario.nombre;
     } else {
-        window.location.href = 'index.html';
+        // window.location.href = 'index.html';
     }
     loadStats();
 }
@@ -57,5 +61,13 @@ async function loadStats() {
         if (autosPendientes) autosPendientes.textContent = 'Error';
     }
 }
-
+function showHideMenuProfile() {
+    const menu = document.getElementById("accountOptionsMenu");
+    menu.classList.toggle("hidden");
+    document.getElementById("accountOptionsMenu").classList.toggle("openxpp");
+    document.getElementById("blackBlurBg").classList.toggle("blurbg");
+}
 setProps();
+
+document.getElementById("ProfileButton").onclick = showHideMenuProfile;
+document.getElementById("backk").onclick = showHideMenuProfile;

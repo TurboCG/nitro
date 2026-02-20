@@ -18,7 +18,7 @@ body {
 }
 
 .imageHeader {
-    width: 200px;
+    width: 120px;
 }
 
 .content {
@@ -99,6 +99,103 @@ h1, h3 {
 }
 
 .loginOptions{
-    display: none;
+    
+    position:absolute;
+    width: stretch;
+    height: stretch;
+    top: 0;
+    border-radius: 20px;
+    border: #00000017 inset 1px;
+    background-color: rgba(242, 242, 242, 0.76);
+    /* justify-items: center; */
+    justify-content: center;
 
+    padding: 20px;
+}
+
+.profile {
+    position: absolute;
+    right: 20px;
+    width: 50px;
+    border: #00000011 2px inset;
+    border-radius: 2000000px;
+}
+
+.hidden {
+    display: none;
+}
+
+.headerCard {
+    justify-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pfp {
+    width: 50px;
+}
+
+.optionCardButton {
+    width: 85vw;
+    height: 8vh;
+    font-size: 20px;
+    color: #000;
+    background-color: #ffffff9a;
+    border: 0;
+    border-radius: 20px;
+}
+
+.cardLogin {
+    z-index: 200;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px
+}
+
+.blackBG {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: stretch;
+    height: stretch;
+    background-color: #000;
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.openxpp {
+  animation: openx 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.blurbg {
+    display: block;
+    animation: blurbgg 800ms cubic-bezier(0.30, 1, 0.1, 1) forwards;
+}
+
+@keyframes openx {
+  from {
+    transform: translateY(100vh); /* Posición inicial */    
+  }
+  to {
+    transform: translateY(20px); /* Posición final (arriba) */
+  }
+}
+
+@keyframes blurbgg {
+  from {
+    backdrop-filter: blur(0px);
+    background-color: #00000000;
+  }
+  to {
+    backdrop-filter: blur(32px);
+    background-color: #000000a8;
+  }
 }

@@ -11,10 +11,11 @@
 </head>
 <body>
     <div class="header">
-        <img src="resources/header.svg" alt="" srcset="" class="imageHeader">
+        <img src="resources/header_2.svg" alt="" srcset="" class="imageHeader">
+        <img src="resources/pfp.png" alt="Opciones de la cuenta" srcset="" class="profile" id="ProfileButton">
     </div>
     <div class="content">
-        <h1>¿Qué onda, <span id="nombreMecanico">Juan</span>?</h1>
+        <h1><span id="saludo">¿Qué onda, </span><span id="nombreMecanico">Juan</span>?</h1>
     
         <div class="doubleRoll">
             <div class="card">
@@ -35,10 +36,18 @@
     <div class="navBar">
         
     </div>
-    <div class="loginOptions">
-        <div class="blackBG"></div>
+    <div id="blackBlurBg"class="blackBG"></div>
+    <div class="loginOptions hidden" id="accountOptionsMenu">
+        
         <div class="cardLogin">
-            <button>Cerrar sesión</button>
+            <img src="resources/back.svg" alt="" srcset="" class="backButton" id="backk">
+            <div class="headerCard">
+                <img src="resources/pfp.png" class="pfp">
+                <h2 id="nombreMecanico">Q</h2>
+            </div>
+            <button class="optionCardButton">Configuración</button>
+            <button class="optionCardButton">Historial</button>
+            <button class="optionCardButton">Cerrar sesión</button>
         </div>
     </div>
 
