@@ -123,6 +123,34 @@ body {
   justify-self: center;
 }
 
+.warning {
+  width: stretch;
+  background-color: #ffcdcd;
+  border: inset 1px rgba(255, 7, 7, 0.267);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  gap: 20px;
+  display: none;
+}
+
+.warningIcon {
+  width: 50px;
+  filter: brightness(0);
+}
+.doubleText {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+h3, h4 {
+  margin: 0;
+}
+
+h4 {
+  font-weight: 400;
+}
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

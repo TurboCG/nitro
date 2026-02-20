@@ -69,5 +69,8 @@ function showHideMenuProfile() {
 }
 setProps();
 
+function closeSession() {
+    
+}
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;

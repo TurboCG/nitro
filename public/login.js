@@ -47,6 +47,7 @@ async function login() {
             window.location.href = 'menu.html';
         } else {
             mostrarError(data.error || 'Credenciales incorrectas');
+            document.getElementById("errorPassw").style.display = "block"
             hideSpinner();
         }
     } catch(error) {
