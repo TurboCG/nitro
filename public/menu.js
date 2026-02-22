@@ -65,11 +65,49 @@ function showHideMenuProfile() {
 }
 
 function showHideAddCar() {
+    if (document.getElementById("inputInf").style.display == "none"){
+        document.getElementById("inputInf").style.display = "flex";
+        document.getElementById("inputInfConfirm").style.display = "none";
+    }
+
     const menu = document.getElementById("carOptionsMenu");
     menu.classList.toggle("hidden");
     document.getElementById("carOptionsMenu").classList.toggle("openxpp");
     document.getElementById("blackBlurBg").classList.toggle("blurbg");
 }
+
+function loadCacheConfirm() {
+    document.getElementById("inputInf").style.display = "none"
+    document.getElementById("inputInfConfirm").style.display = "flex"
+}
+
+async function loadCars() {
+    try {
+        const response = await fetch(`${API_URL}/api/autos?usuario_id=${usuarioActual.id}`);
+        const autos = await response.json();
+        
+        let html = '';
+        autos.forEach(auto => {
+            const fecha = new Date(auto.fecha_ingreso).toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            html += `
+                
+            `;
+        });
+        
+        listaAutos.innerHTML = html || '<p class="no-autos">No hay autos registrados</p>';
+        
+    } catch(error) {
+        mostrarError('Error cargando autos: ' + error.message);
+    }
+}
+
 
 const button = document.getElementById('invokeDate');
 const dateInput = document.getElementById('dateInput');
@@ -92,3 +130,4 @@ document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
 document.getElementById("backAddCar").onclick = showHideAddCar;
 document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
+document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;

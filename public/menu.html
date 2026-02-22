@@ -34,7 +34,8 @@
         <h3>Ultimos agregados</h1>
     </div>
     <div class="navBar">
-        
+        <img src="resources/home.svg" alt="" class="iconTab">
+        <img src="resources/history.svg" alt="" class="iconTab">
     </div>
     <div id="blackBlurBg"class="blackBG"></div>
     <div class="loginOptions hidden" id="accountOptionsMenu">
@@ -59,13 +60,13 @@
             <div class="headerCard">
                 <h3 class="titleCardLabel">Añadir un auto</h2>
             </div>
-            <div class="inputInformation">
-                <input type="text" placeholder="Patente" maxlength="7" class="addCarExpand">
-                <input type="text" placeholder="Marca" class="addCarExpand"> 
-                <input type="text" placeholder="Modelo" class="addCarExpand">
-                <input type="text" placeholder="Kilometraje" class="addCarExpand">
-                <input type="text" placeholder="Año" class="addCarExpand">
-                <input type="tel" placeholder="Arreglos" class="addCarExpand" ex>
+            <div class="inputInformation" id="inputInf">
+                <input type="text" placeholder="Patente" maxlength="7" class="addCarExpand" id="patenteInput">
+                <input type="text" placeholder="Marca" class="addCarExpand" id="marcaInput"> 
+                <input type="text" placeholder="Modelo" class="addCarExpand" id="modeloInput">
+                <input type="text" placeholder="Kilometraje" class="addCarExpand" id="kilometrajeInput">
+                <input type="text" placeholder="Año" class="addCarExpand" id="anoInput">
+                <input type="text" placeholder="Arreglos" class="addCarExpand" id="arreglosInput" >
                 <select name="Estado" id="" class="addCarExpand">
                     <option value="listo">Listo</option>
                     <option value="progreso">En progreso</option>
@@ -75,11 +76,19 @@
                     <span id="spanDateLabelButton">Fecha de entrada</span>
                 </button>
                 <input type="date" name="" id="dateInput" style="display: none;">
-                <button class="accentColorButton">Continuar</button>
+                <button class="accentColorButton" id="confirmButtonToNext">Continuar</button>
             </div>
-            <div class="inputInformation confirm" style="display:none;">
-                <h1>¿Publicar?</h1>
+            <div class="inputInformation confirm" style="display:none;" id="inputInfConfirm">
+                <h1>¿Esta seguro que desea terminar?</h1>
                 <button id="button" type="button" class="accentColorButton"><span id="labelButton">Publicar</span><img src="resources/spinner.svg" class="spinner" id="spinner"></button>
+                <h3>Patente: <span id="patentePreview"></span></h3>
+                <h3>Marca: <span id="marcaPreview"></span></h3>
+                <h3>Modelo: <span id="modeloPreview"></span></h3>
+                <h3>Kilometraje: <span id="kilometrajePreview"></span></h3>
+                <h3>Año: <span id="añoePreview"></span></h3>
+                <h3>Arreglos: <span id="arreglosPreview"></span></h3>
+                <h3>Estado: <span id="estadoPreview"></span></h3>
+                <h3>Fecha de entrada: <span id="datePreview"></span></h3>
             </div>
         </div>
     </div>
