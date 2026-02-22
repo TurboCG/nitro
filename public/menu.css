@@ -100,6 +100,11 @@ body {
 
 h1, h3 {
     font-weight: 500;
+
+}
+
+.h3_2 {
+    margin: 5px;
 }
 
 .loginOptions{
@@ -114,7 +119,7 @@ h1, h3 {
     background-color: rgba(242, 242, 242, 0.76);
     /* justify-items: center; */
     justify-content: center;
-
+    
     padding: 20px;
 }
 
@@ -168,6 +173,7 @@ h1, h3 {
     width: stretch;
     height: stretch;
     background-color: #000;
+    pointer-events:none; 
 }
 
 .backButton {
@@ -180,12 +186,20 @@ h1, h3 {
   animation: openx 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.closexpp {
+  animation: closex 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .blurbg {
     display: block;
     position: fixed;
     animation: blurbgg 800ms cubic-bezier(0.30, 1, 0.1, 1) forwards;
 }
-
+.unblurbg {
+    display: block;
+    position: fixed;
+    animation: unblurbgg 800ms cubic-bezier(0.30, 1, 0.1, 1) forwards;
+}
 @keyframes openx {
   from {
     transform: translateY(100vh); /* Posición inicial */    
@@ -194,7 +208,24 @@ h1, h3 {
     transform: translateY(5%); /* Posición final (arriba) */
   }
 }
-
+@keyframes closex {
+  from {
+    transform: translateY(5%); /* Posición inicial */    
+  }
+  to {
+    transform: translateY(100vh); /* Posición final (arriba) */
+  }
+}
+@keyframes unblurbgg {
+  from {
+    backdrop-filter: blur(32px);
+    background-color: #000000a8;
+  }
+  to {
+    backdrop-filter: blur(0px);
+    background-color: #00000000;
+  }
+}
 @keyframes blurbgg {
   from {
     backdrop-filter: blur(0px);

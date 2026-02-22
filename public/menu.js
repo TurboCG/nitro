@@ -59,27 +59,62 @@ async function loadStats() {
 }
 function showHideMenuProfile() {
     const menu = document.getElementById("accountOptionsMenu");
-    menu.classList.toggle("hidden");
-    document.getElementById("accountOptionsMenu").classList.toggle("openxpp");
-    document.getElementById("blackBlurBg").classList.toggle("blurbg");
+    const blurBg = document.getElementById("blackBlurBg");
+    if (menu.classList.contains("openxpp")) {
+        menu.classList.remove("openxpp");
+        menu.classList.add("closexpp");
+        blurBg.classList.add("unblurbg");
+        blurBg.classList.remove("blurbg");
+        menu.addEventListener('animationend', function alTerminar() {
+            if (menu.classList.contains('closexpp')) {
+            }
+            
+            menu.removeEventListener('animationend', alTerminar);
+        });
+
+    } else {
+        menu.classList.remove("closexpp");
+        menu.classList.add("openxpp");
+        menu.style.display = "block";
+        blurBg.classList.add("blurbg");
+        blurBg.classList.remove("unblurbg");
+    }
 }
 
 function showHideAddCar() {
-    if (document.getElementById("inputInf").style.display == "none"){
-        document.getElementById("inputInf").style.display = "flex";
-        document.getElementById("inputInfConfirm").style.display = "none";
-    }
-
     const menu = document.getElementById("carOptionsMenu");
-    menu.classList.toggle("hidden");
-    document.getElementById("carOptionsMenu").classList.toggle("openxpp");
-    document.getElementById("blackBlurBg").classList.toggle("blurbg");
-}
+    const inputInf = document.getElementById("inputInf");
+    const inputInfConfirm = document.getElementById("inputInfConfirm");
+    const blurBg = document.getElementById("blackBlurBg");
+    if (inputInf.style.display == "none") {
+        inputInf.style.display = "flex";
+        inputInfConfirm.style.display = "none";
+    }
+    if (menu.classList.contains("openxpp")) {
+        menu.classList.remove("openxpp");
+        menu.classList.add("closexpp");
+        blurBg.classList.add("unblurbg");
+        blurBg.classList.remove("blurbg");
+        menu.addEventListener('animationend', function alTerminar() {
+            if (menu.classList.contains('closexpp')) {
+            }
+            
+            menu.removeEventListener('animationend', alTerminar);
+        });
 
+    } else {
+        menu.classList.remove("closexpp");
+        menu.classList.add("openxpp");
+        menu.style.display = "block";
+        blurBg.classList.add("blurbg");
+        blurBg.classList.remove("unblurbg");
+    }
+}
 function loadCacheConfirm() {
     document.getElementById("inputInf").style.display = "none"
     document.getElementById("inputInfConfirm").style.display = "flex"
 }
+
 
 async function loadCars() {
     try {
@@ -113,7 +148,6 @@ const button = document.getElementById('invokeDate');
 const dateInput = document.getElementById('dateInput');
 const dateInputLabel = document.getElementById("spanDateLabelButton")
 button.addEventListener('click', () => {
-// Esto invoca el diálogo del date input directamente
     dateInput.showPicker(); 
 });
 
@@ -122,12 +156,18 @@ dateInput.addEventListener('change', () => {
     dateInputLabel.textContent = dateInput.value
 });
 setProps();
-
+function closeCard(element) {
+    //element.style.display = "none";
+}
 function closeSession() {
-
+    
 }
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
 document.getElementById("backAddCar").onclick = showHideAddCar;
 document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
 document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;
+const cerrar = document.querySelector('.closexpp');
+cerrar.addEventListener('animationend', () => {
+  closeCard(cerrar); 
+}, { once: true });
