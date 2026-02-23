@@ -132,7 +132,7 @@ h1, h3 {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .headerCard {

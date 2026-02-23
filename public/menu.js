@@ -54,65 +54,21 @@ async function loadStats() {
     }
 
 }
-function showHideMenuProfile() {
-    const menu = document.getElementById("accountOptionsMenu");
-    const blurBg = document.getElementById("blackBlurBg");
-    if (menu.classList.contains("openxpp")) {
-        menu.classList.remove("openxpp");
-        menu.classList.add("closexpp");
-        blurBg.classList.add("unblurbg");
-        blurBg.classList.remove("blurbg");
-        menu.addEventListener('animationend', function alTerminar() {
-            if (menu.classList.contains('closexpp')) {
-            }
-            
-            menu.removeEventListener('animationend', alTerminar);
-        });
-
-    } else {
-        menu.classList.remove("closexpp");
-        menu.classList.add("openxpp");
-        menu.style.display = "block";
-        blurBg.classList.add("blurbg");
-        blurBg.classList.remove("unblurbg");
-    }
-}
-
 function showHideAddCar() {
-    const menu = document.getElementById("carOptionsMenu");
     const inputInf = document.getElementById("inputInf");
     const inputInfConfirm = document.getElementById("inputInfConfirm");
-    const blurBg = document.getElementById("blackBlurBg");
-    if (inputInf.style.display == "none") {
+    
+    // Tu lógica de negocio específica
+    if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
-        if (!isPublished){
-            return;
-        }
-        
     }
-    if (menu.classList.contains("openxpp")) {
-        menu.classList.remove("openxpp");
-        menu.classList.add("closexpp");
-        blurBg.classList.add("unblurbg");
-        blurBg.classList.remove("blurbg");
-        menu.addEventListener('animationend', () => {
-            closeCard(menu); 
-        }, { once: true });
-        menu.addEventListener('animationend', function alTerminar() {
-            if (menu.classList.contains('closexpp')) {
-            }
-            menu.removeEventListener('animationend', alTerminar);
-        });
 
-    } else {
-        menu.classList.remove("closexpp");
-        menu.classList.add("openxpp");
-        menu.style.display = "block";
-        blurBg.classList.add("blurbg");
-        blurBg.classList.remove("unblurbg");
-        blurBg.classList.remove("hidden");
-    }
+    toggleMenu("carOptionsMenu", "openxpp", "closexpp");
+}
+
+function showHideMenuProfile() {
+    toggleMenu("accountOptionsMenu", "openxpp", "closexpp");
 }
 function loadCacheConfirm() {
     document.getElementById("inputInf").style.display = "none"
@@ -161,9 +117,39 @@ dateInput.addEventListener('change', () => {
 });
 setProps();
 function closeCard(element) {
-    console.log("Ocultando", element)
     element.style.display = "none";
 }
+
+function toggleMenu(menuId, openClass, closeClass) {
+    const menu = document.getElementById(menuId);
+    const blurBg = document.getElementById("blackBlurBg");
+
+    if (menu.classList.contains(openClass)) {
+        menu.classList.remove(openClass);
+        menu.classList.add(closeClass);
+        blurBg.classList.replace("blurbg", "unblurbg");
+
+        menu.addEventListener('animationend', () => {
+            if (menu.classList.contains(closeClass)) {
+                menu.style.display = "none";
+                blurBg.classList.add("hidden");
+            }
+        }, { once: true });
+
+    } else {
+        menu.style.display = "block";
+        menu.style.opacity = "0";
+        setTimeout(() => {
+            menu.classList.remove(closeClass);
+            menu.classList.add(openClass);
+            menu.style.opacity = "1";
+            blurBg.style.display = "block";
+            blurBg.classList.remove("hidden", "unblurbg");
+            blurBg.classList.add("blurbg");
+        }, 10);
+    }
+}
+
 async function addCar() {
     isPublished = true;
     showSpinnerButtonPub()
