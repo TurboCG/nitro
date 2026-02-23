@@ -170,14 +170,14 @@ async function addCar() {
             patente: document.getElementById('patenteInput').value,
             marca: document.getElementById('marcaInput').value,
             modelo: document.getElementById('modeloInput').value,
-            kilometraje: document.getElementById('kilometrajeInput').value,
+            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
             ano: parseInt(document.getElementById('anoInput').value),
             problema: document.getElementById('arreglosInput').value,
             estado: document.getElementById("statusInput").value
         };
 
         // Validaciones básicas
-        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.año || !auto.problema || !auto.estado) {
+        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado) {
             console.log("Error 311");
             return;
         }
