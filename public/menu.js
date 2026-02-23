@@ -32,30 +32,26 @@ async function loadStats() {
         if (!usuarioStr) {
             console.log('No hay usuario logueado');
             return;
-        }
-        
-        const usuario = JSON.parse(usuarioStr);
-        const userId = usuario.id; 
-        
-        console.log('Cargando stats para usuario:', userId);
-        
-        const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const stats = await response.json();
-        console.log('Estadísticas recibidas:', stats);
-
-        if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
-        const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
-        if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
-        autosPendientes.classList.remove("blurLabel");
-        totalAutos.classList.remove("blurLabel");
+        }else{
+            const usuario = JSON.parse(usuarioStr);
+            const userId = usuario.id; 
+            console.log('Cargando stats para usuario:', userId);
+            const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const stats = await response.json();
+            console.log('Estadísticas recibidas:', stats);
+            if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
+            const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
+            if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
+            autosPendientes.classList.remove("blurLabel");
+            totalAutos.classList.remove("blurLabel");
+        }   
     } catch(error) {
         console.error('Error cargando estadísticas:', error);  
     }
+
 }
 function showHideMenuProfile() {
     const menu = document.getElementById("accountOptionsMenu");
