@@ -355,20 +355,15 @@ def register():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/estadisticas/<int:usuario_id>', methods=['GET'])
-def get_estadisticas(usuario_id):
-    """Estadísticas del taller"""
+def get_estadisticas():
     try:
+        usuario_id = get_jwt_identity()
         conn = get_db_connection()
         if not conn:
             return jsonify({"error": "Error de conexión"}), 500
-        
         cur = conn.cursor(row_factory=dict_row)
-        
-        # Total de autos
         cur.execute("SELECT COUNT(*) as total FROM autos WHERE usuario_id = %s", (usuario_id,))
         total = cur.fetchone()
-        
-        # Autos por estado
         cur.execute("""
             SELECT estado, COUNT(*) as cantidad 
             FROM autos 
@@ -376,8 +371,6 @@ def get_estadisticas(usuario_id):
             GROUP BY estado
         """, (usuario_id,))
         estados = cur.fetchall()
-        
-        # Autos este mes
         cur.execute("""
             SELECT COUNT(*) as cantidad 
             FROM autos 
@@ -385,10 +378,8 @@ def get_estadisticas(usuario_id):
             AND EXTRACT(MONTH FROM fecha_ingreso) = EXTRACT(MONTH FROM CURRENT_DATE)
         """, (usuario_id,))
         mes_actual = cur.fetchone()
-        
         cur.close()
         conn.close()
-        
         return jsonify({
             "total_autos": total['total'] if total else 0,
             "por_estado": estados,
