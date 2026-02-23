@@ -1,8 +1,6 @@
 function check(){
-    const usuario = sessionStorage.getItem("usuarioActual");
-    const id = sessionStorage.getItem("userID");
-    if (usuario && id) {
-        window.location.href = "/menu.html";
+    if (sessionStorage.getItem("usuarioActual") && sessionStorage.getItem("userID")){
+        location.href = "/menu.html"
     }
 }
 
