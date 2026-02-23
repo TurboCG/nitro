@@ -33,7 +33,15 @@ async function login() {
         const data = await response.json();
         
         if (data.success) {
-            sessionStorage.setItem('userInfo', JSON.stringify(data.user));
+            const userUI = {
+                nombre: data.user.nombre,
+                apellido: data.user.apellido || '',
+                email: data.user.email,
+                id: data.user.id  // Guardar ID también
+            };
+            sessionStorage.setItem('userUI', JSON.stringify(userUI));
+            sessionStorage.removeItem('usuarioActual');
+            sessionStorage.removeItem('userID');
             hideSpinner();
             window.location.href = 'menu.html';
         } else {

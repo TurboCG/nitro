@@ -12,47 +12,76 @@ if (userUIStr) {
 } else {
     checkAuth();
 }
+async function init() {
+    const sessionValid = await checkAuth();
+    if (!sessionValid) {
+        window.location.href = 'index.html';
+        return;
+    }
+    loadUserFromStorage();
+    setProps();
+    await loadStats();
+}
 
 function setProps() {
-    const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
+    const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Cómo va eso, ", "¿Va todo joya, "];
     const indiceAleatorio = Math.floor(Math.random() * opciones.length);
     const seleccion = opciones[indiceAleatorio];
-    document.getElementById("saludo").textContent = seleccion;
-    if (usuarioUI) {        
-        document.getElementById('nombreMecanico').textContent = usuarioUI.nombre;
-        document.getElementById('nombreMecanico2').textContent = usuarioUI.nombre;
+    const saludoEl = document.getElementById("saludo");
+    if (saludoEl) saludoEl.textContent = seleccion;
+    if (usuarioUI) {
+        console.log('👤 Mostrando usuario:', usuarioUI);
+        const nombreEl = document.getElementById('nombreMecanico');
+        const nombre2El = document.getElementById('nombreMecanico2');
+        if (nombreEl) nombreEl.textContent = usuarioUI.nombre;
+        if (nombre2El) nombre2El.textContent = usuarioUI.nombre;
         if (usuarioUI.apellido) {
-            // document.getElementById('apellidoMecanico').textContent = usuarioUI.apellido;
+            const apellidoEl = document.getElementById('apellidoMecanico');
+            if (apellidoEl) apellidoEl.textContent = usuarioUI.apellido;
         }
     } else {
-        console.warn('No hay datos de usuario, redirigiendo...');
-        window.location.href = 'index.html';
+        console.warn('⚠️ No hay datos de usuario en setProps');
     }
-    loadStats();
 }
 
 
 async function loadStats() {
-    document.getElementById('spinnerStat').style.display = "block";
-    document.getElementById('spinnerStat2').style.display = "block";
+    const spinnerStat = document.getElementById('spinnerStat');
+    const spinnerStat2 = document.getElementById('spinnerStat2');
+    
+    if (spinnerStat) spinnerStat.style.display = "block";
+    if (spinnerStat2) spinnerStat2.style.display = "block";
+    
     try {
+        console.log('📊 Cargando estadísticas...');
         const response = await fetch(`${API_URL}/api/estadisticas`, {
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json'
+            }
         });
-        document.getElementById('spinnerStat').style.display = "none";
-        document.getElementById('spinnerStat2').style.display = "none";
-         if (!response.ok) {
-            throw new Error(`Error ${response.status}`);
+        
+        if (spinnerStat) spinnerStat.style.display = "none";
+        if (spinnerStat2) spinnerStat2.style.display = "none";
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
+        
         const stats = await response.json();
-        console.log('stat:', stats);
+        console.log('📊 Estadísticas:', stats);
 
         if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
         
         const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
         if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
+        
     } catch(error) {
-        console.error('Error cargando estadísticas:', error);  
+        console.error('❌ Error cargando estadísticas:', error);
+        if (spinnerStat) spinnerStat.style.display = "none";
+        if (spinnerStat2) spinnerStat2.style.display = "none";
+        if (totalAutos) totalAutos.textContent = '0';
+        if (autosPendientes) autosPendientes.textContent = '0';
     }
 }
 function showHideAddCar() {
@@ -69,6 +98,17 @@ function showHideAddCar() {
 function showHideMenuProfile() {
     toggleMenu("accountOptionsMenu", "openxpp", "closexpp");
 }
+function loadUserFromStorage() {
+    const userUIStr = sessionStorage.getItem('userUI');
+    if (userUIStr) {
+        usuarioUI = JSON.parse(userUIStr);
+        console.log('✅ Usuario cargado de storage:', usuarioUI);
+    } else {
+        console.warn('⚠️ No hay userUI en storage');
+    }
+}
+
+
 function loadCacheConfirm() {
     document.getElementById("inputInf").style.display = "none"
     document.getElementById("inputInfConfirm").style.display = "flex"
@@ -122,32 +162,40 @@ function toggleMenu(menuId, openClass, closeClass) {
 }
 
 async function addCar() {
+    if (!usuarioUI || !usuarioUI.id) {
+        console.error('❌ No hay usuario autenticado');
+        return;
+    }
+    
     isPublished = true;
-    showSpinnerButtonPub()
+    showSpinnerButtonPub();
+    
     try {
         const auto = {
-            usuario_id: usuarioActual,
-            patente: document.getElementById('patenteInput').value,
-            marca: document.getElementById('marcaInput').value,
-            modelo: document.getElementById('modeloInput').value,
-            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
-            ano: parseInt(document.getElementById('anoInput').value),
-            problema: document.getElementById('arreglosInput').value,
-            estado: document.getElementById("statusInput").value,
-            fecha_ingreso: document.getElementById("dateInput").value
+            usuario_id: usuarioUI.id,  // ✅ Usar el ID de usuarioUI
+            patente: document.getElementById('patenteInput')?.value || '',
+            marca: document.getElementById('marcaInput')?.value || '',
+            modelo: document.getElementById('modeloInput')?.value || '',
+            kilometraje: parseInt(document.getElementById('kilometrajeInput')?.value) || 0,
+            año: parseInt(document.getElementById('anoInput')?.value) || new Date().getFullYear(),
+            problema: document.getElementById('arreglosInput')?.value || '',
+            estado: document.getElementById("statusInput")?.value || 'pendiente',
+            fecha_ingreso: document.getElementById("dateInput")?.value || new Date().toISOString().split('T')[0]
         };
 
-        // Validaciones básicas
-        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado || !auto.fecha_ingreso) {
-            console.log("Error 311");
-            hideSpinnerButtonPub()
+        // Validaciones
+        if (!auto.patente || !auto.marca || !auto.modelo || !auto.problema) {
+            console.log("❌ Campos requeridos faltantes");
+            hideSpinnerButtonPub();
+            isPublished = false;
             return;
         }
 
         const response = await fetch(`${API_URL}/api/autos`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(auto)
+            body: JSON.stringify(auto),
+            credentials: 'include'
         });
         
         const result = await response.json();
@@ -160,16 +208,17 @@ async function addCar() {
             document.getElementById('kilometrajeInput').value = '';
             document.getElementById('arreglosInput').value = '';
             document.getElementById('anoInput').value = '';
+            
             showHideAddCar();
-            hideSpinnerButtonPub();
-            isPublished = false;
+            await loadStats(); // Recargar estadísticas
         } else {
-            hideSpinnerButtonPub()
-            console.log("Error 351");
+            console.log("❌ Error en respuesta:", result);
         }
     } catch(error) {
-        hideSpinnerButtonPub()
-        console.log("Error 677");
+        console.error("❌ Error en addCar:", error);
+    } finally {
+        hideSpinnerButtonPub();
+        isPublished = false;
     }
 }
 
@@ -191,30 +240,39 @@ function hideShowVerifyPub(){
 }
 async function checkAuth() {
     try {
+        console.log('🔍 Verificando sesión...');
         const response = await fetch(`${API_URL}/api/verify-session`, {
-            credentials: 'include'  // Envía la cookie HttpOnly automáticamente
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json'
+            }
         });
+        
+        console.log('📥 Response status:', response.status);
         
         if (response.ok) {
             const data = await response.json();
-            // Si hay sesión pero no datos UI, los recreamos
-            if (!usuarioUI && data.user) {
+            console.log('✅ Sesión válida:', data);
+            
+            if (data.success && data.user) {
+                // Guardar en memoria y storage
                 usuarioUI = {
                     nombre: data.user.nombre,
                     apellido: data.user.apellido || '',
-                    email: data.user.email
+                    email: data.user.email,
+                    id: data.user.id
                 };
                 sessionStorage.setItem('userUI', JSON.stringify(usuarioUI));
-                setProps(); // Re-ejecutar la UI
+                return true;
             }
-        } else {
-            // Sesión inválida, redirigir
-            window.location.href = 'index.html';
         }
+        
+        console.warn('❌ Sesión inválida');
+        return false;
+        
     } catch(error) {
-        console.error('Error verificando sesión:', error);
-        // Si hay error de red, no redirigir inmediatamente
-        // pero mostrar un mensaje
+        console.error('❌ Error verificando sesión:', error);
+        return false;
     }
 }
 
@@ -230,11 +288,9 @@ async function logout() {
             method: 'POST',
             credentials: 'include'
         });
-        sessionStorage.removeItem('userInfo');
-        window.location.href = 'index.html';
     } catch(error) {
         console.error('Error en logout:', error);
-        // Forzar logout local
+    } finally {
         sessionStorage.clear();
         window.location.href = 'index.html';
     }
