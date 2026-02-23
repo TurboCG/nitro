@@ -64,10 +64,11 @@ function showHideAddCar() {
     if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
-        return;
     }
-
-    toggleMenu("carOptionsMenu", "openxpp", "closexpp");
+    if (isPublished){
+        toggleMenu("carOptionsMenu", "openxpp", "closexpp");
+    }
+    
 }
 
 function showHideMenuProfile() {
@@ -76,34 +77,6 @@ function showHideMenuProfile() {
 function loadCacheConfirm() {
     document.getElementById("inputInf").style.display = "none"
     document.getElementById("inputInfConfirm").style.display = "flex"
-}
-
-
-async function loadCars() {
-    try {
-        const response = await fetch(`${API_URL}/api/autos?usuario_id=${usuarioActual.id}`);
-        const autos = await response.json();
-        
-        let html = '';
-        autos.forEach(auto => {
-            const fecha = new Date(auto.fecha_ingreso).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            html += `
-                
-            `;
-        });
-        
-        listaAutos.innerHTML = html || '<p class="no-autos">No hay autos registrados</p>';
-        
-    } catch(error) {
-        mostrarError('Error cargando autos: ' + error.message);
-    }
 }
 
 
