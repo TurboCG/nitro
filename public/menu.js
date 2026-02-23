@@ -59,7 +59,6 @@ async function loadStats() {
 function showHideAddCar() {
     const inputInf = document.getElementById("inputInf");
     const inputInfConfirm = document.getElementById("inputInfConfirm");
-    
     // Tu lógica de negocio específica
     if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
@@ -186,9 +185,15 @@ function hideSpinnerButtonPub(){
     document.getElementById("spinner").style.display = "none";
     document.getElementById("labelButton").style.display = "block";
 }
+function hideShowVerifyPub(){
+    if (inputInf.style.display === "none" || inputInf.style.display === "") {
+        inputInf.style.display = "flex";
+        inputInfConfirm.style.display = "none";
+    }
+}
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
-document.getElementById("backAddCar").onclick = showHideAddCar;
+document.getElementById("backAddCar").onclick = hideShowVerifyPub;
 document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
 document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;
 document.getElementById("buttonCheckPost").onclick = addCar;
