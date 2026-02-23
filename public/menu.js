@@ -95,10 +95,12 @@ function showHideAddCar() {
         menu.classList.add("closexpp");
         blurBg.classList.add("unblurbg");
         blurBg.classList.remove("blurbg");
+        menu.addEventListener('animationend', () => {
+            closeCard(menu); 
+        }, { once: true });
         menu.addEventListener('animationend', function alTerminar() {
             if (menu.classList.contains('closexpp')) {
             }
-            
             menu.removeEventListener('animationend', alTerminar);
         });
 
@@ -108,6 +110,7 @@ function showHideAddCar() {
         menu.style.display = "block";
         blurBg.classList.add("blurbg");
         blurBg.classList.remove("unblurbg");
+        blurBg.classList.remove("hidden");
     }
 }
 function loadCacheConfirm() {
@@ -157,17 +160,54 @@ dateInput.addEventListener('change', () => {
 });
 setProps();
 function closeCard(element) {
-    //element.style.display = "none";
+    console.log("Ocultando", element)
+    element.style.display = "none";
 }
-function closeSession() {
-    
+async function addCar() {
+    try {
+        const auto = {
+            usuario_id: usuarioActual.id,
+            patente: document.getElementById('patenteInput').value,
+            marca: document.getElementById('marcaInput').value,
+            modelo: document.getElementById('modeloInput').value,
+            kilometraje: document.getElementById('kilometrajeInput').value,
+            año: parseInt(document.getElementById('anoInput').value),
+            problema: document.getElementById('arreglosInput').value,
+            estado: document.getElementById("addCarExpand").value
+        };
+
+        // Validaciones básicas
+        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.año || !auto.problema || !auto.estado) {
+            console.log("Error  311");
+            return;
+        }
+
+        const response = await fetch(`${API_URL}/api/autos`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(auto)
+        });
+        
+        const result = await response.json();
+        
+        if(result.success) {
+            // Limpiar formulario
+            document.getElementById('patenteInput').value = '';
+            document.getElementById('marcaInput').value = '';
+            document.getElementById('modeloInput').value = '';
+            document.getElementById('kilometrajeInput').value = '';
+            document.getElementById('arreglosInput').value = '';
+            document.getElementById('anoInput').value = '';
+        } else {
+            console.log("Error 351");
+        }
+    } catch(error) {
+        console.log("Error 677");
+    }
 }
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
 document.getElementById("backAddCar").onclick = showHideAddCar;
 document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
 document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;
-const cerrar = document.querySelector('.closexpp');
-cerrar.addEventListener('animationend', () => {
-  closeCard(cerrar); 
-}, { once: true });
+document.getElementById("buttonCheckPost").onclick = addCar;

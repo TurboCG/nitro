@@ -78,7 +78,7 @@ body {
 .header {
   display: flex;
   position: fixed;
-  width: 100%;
+  width: stretch;
   padding: 20px;
   padding-top: 15px;
   align-content: center;
@@ -125,23 +125,21 @@ body {
 
 .warning {
   width: stretch;
-  background-color: #ffcdcd;
-  border: inset 1px rgba(255, 7, 7, 0.267);
   border-radius: 20px;
   padding: 16px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  
   display: flex;
   gap: 20px;
   display: none;
 }
 
 .warningIcon {
-  width: 50px;
-  filter: brightness(0);
+  width: 20px;
 }
 .doubleText {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
+  color: red;
 }
 
 h3, h4 {
