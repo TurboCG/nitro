@@ -170,8 +170,8 @@ async function addCar() {
             patente: document.getElementById('patenteInput').value,
             marca: document.getElementById('marcaInput').value,
             modelo: document.getElementById('modeloInput').value,
-            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
-            ano: document.getElementById('anoInput').value,
+            kilometraje: document.getElementById('kilometrajeInput').value,
+            ano: parseInt(document.getElementById('anoInput').value),
             problema: document.getElementById('arreglosInput').value,
             estado: document.getElementById("statusInput").value
         };
