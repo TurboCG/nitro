@@ -173,7 +173,7 @@ async function addCar() {
             kilometraje: document.getElementById('kilometrajeInput').value,
             año: parseInt(document.getElementById('anoInput').value),
             problema: document.getElementById('arreglosInput').value,
-            estado: document.getElementById("addCarExpand").value
+            estado: document.getElementById("statusInput").value
         };
 
         // Validaciones básicas
