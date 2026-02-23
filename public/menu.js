@@ -4,62 +4,60 @@ const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
 const usuarioStr = sessionStorage.getItem('usuarioActual');
 const usuarioActual = sessionStorage.getItem("userID");
+const userUIStr = sessionStorage.getItem('userUI');
+let usuarioUI = null;
 var isPublished = false;
+if (userUIStr) {
+    usuarioUI = JSON.parse(userUIStr);
+} else {
+    checkAuth();
+}
+
 function setProps() {
     const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
     const indiceAleatorio = Math.floor(Math.random() * opciones.length);
     const seleccion = opciones[indiceAleatorio];
     document.getElementById("saludo").textContent = seleccion;
-    if (usuarioStr) {
-    const usuario = JSON.parse(usuarioStr);
-    console.log('Nombre:', usuario.nombre);
-    console.log('Apellido:', usuario.apellido);
-    console.log('Email:', usuario.email);
-    console.log('DNI:', usuario.dni);
-    console.log('ID:', usuario.id);
-    
-    // Mostrar en el HTML
-    document.getElementById('nombreMecanico').textContent = usuario.nombre;
-    document.getElementById('nombreMecanico2').textContent = usuario.nombre;
+    if (usuarioUI) {        
+        document.getElementById('nombreMecanico').textContent = usuarioUI.nombre;
+        document.getElementById('nombreMecanico2').textContent = usuarioUI.nombre;
+        if (usuarioUI.apellido) {
+            // document.getElementById('apellidoMecanico').textContent = usuarioUI.apellido;
+        }
     } else {
-        // window.location.href = 'index.html';
+        console.warn('No hay datos de usuario, redirigiendo...');
+        window.location.href = 'index.html';
     }
     loadStats();
 }
+
 
 async function loadStats() {
     document.getElementById('spinnerStat').style.display = "block";
     document.getElementById('spinnerStat2').style.display = "block";
     try {
-        const usuarioStr = sessionStorage.getItem('usuarioActual');
-        if (!usuarioStr) {
-            console.log('No hay usuario logueado');
-            return;
-        }else{
-            const usuario = JSON.parse(usuarioStr);
-            const userId = usuario.id; 
-            console.log('Cargando stats para usuario:', userId);
-            const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const stats = await response.json();
-            console.log('Estadísticas recibidas:', stats);
-            if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
-            const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
-            if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
-            document.getElementById('spinnerStat').style.display = "none";
-            document.getElementById('spinnerStat2').style.display = "none";
-        }   
+        const response = await fetch(`${API_URL}/api/estadisticas`, {
+            credentials: 'include'
+        });
+        document.getElementById('spinnerStat').style.display = "none";
+        document.getElementById('spinnerStat2').style.display = "none";
+         if (!response.ok) {
+            throw new Error(`Error ${response.status}`);
+        }
+        const stats = await response.json();
+        console.log('stat:', stats);
+
+        if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
+        
+        const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
+        if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
     } catch(error) {
         console.error('Error cargando estadísticas:', error);  
     }
-
 }
 function showHideAddCar() {
     const inputInf = document.getElementById("inputInf");
     const inputInfConfirm = document.getElementById("inputInfConfirm");
-    // Tu lógica de negocio específica
     if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
@@ -191,7 +189,46 @@ function hideShowVerifyPub(){
         showHideAddCar();
     }
 }
-
+async function checkAuth() {
+    try {
+        const response = await fetch(`${API_URL}/api/verify-session`, {
+            credentials: 'include'  // Enviar la cookie
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            return data.user;
+        } else {
+            window.location.href = 'index.html';
+            return null;
+        }
+    } catch(error) {
+        console.error('Error verificando sesión:', error);
+        window.location.href = 'index.html';
+        return null;
+    }
+}
+document.addEventListener('DOMContentLoaded', async () => {
+    const user = await checkAuth();
+    if (user) {
+        document.getElementById('userName').textContent = user.nombre;
+    }
+});
+async function logout() {
+    try {
+        await fetch(`${API_URL}/api/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
+        sessionStorage.removeItem('userInfo');
+        window.location.href = 'index.html';
+    } catch(error) {
+        console.error('Error en logout:', error);
+        // Forzar logout local
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+    }
+}
 document.getElementById("backk").addEventListener('touchstart', () => {
     document.getElementById("backk").classList.remove('unscalle');
     document.getElementById("backk").classList.add('scalle');

@@ -6,7 +6,6 @@ function hideSpinner() {
     document.getElementById("spinner").style.display = "none"
     document.getElementById("labelButton").style.display = "block"
 }
-
 function showSpinner() {
     document.getElementById("spinner").style.display = "block"
     document.getElementById("labelButton").style.display = "none"
@@ -15,7 +14,6 @@ function mostrarExito(mensaje) {
     alert('✅ ' + mensaje);
 }
 async function login() {
-    
     try {
         const dniEmail = document.getElementById('dniEmail').value.trim();
         const password = document.getElementById('password').value;
@@ -28,18 +26,14 @@ async function login() {
         const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                dniEmail: dniEmail,
-                password: password
-            })
+            body: JSON.stringify({ dniEmail, password }),
+            credentials: 'include' 
         });
         
         const data = await response.json();
         
         if (data.success) {
-            sessionStorage.setItem('usuarioActual', JSON.stringify(data.user));
-            sessionStorage.setItem('userID', data.user.id);
-            mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
+            sessionStorage.setItem('userInfo', JSON.stringify(data.user));
             hideSpinner();
             window.location.href = 'menu.html';
         } else {
