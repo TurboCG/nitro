@@ -3,7 +3,8 @@ const nombreMecanico = document.getElementById('nombreMecanico');
 const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
 const usuarioStr = sessionStorage.getItem('usuarioActual');
-const usuarioActual = sessionStorage.getItem("userID")
+const usuarioActual = sessionStorage.getItem("userID");
+var isPublished = false;
 function setProps() {
     const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
     const indiceAleatorio = Math.floor(Math.random() * opciones.length);
@@ -85,7 +86,10 @@ function showHideAddCar() {
     if (inputInf.style.display == "none") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
-        return;
+        if (!isPublished){
+            return;
+        }
+        
     }
     if (menu.classList.contains("openxpp")) {
         menu.classList.remove("openxpp");
@@ -161,6 +165,7 @@ function closeCard(element) {
     element.style.display = "none";
 }
 async function addCar() {
+    isPublished = true;
     showSpinnerButtonPub()
     try {
         const auto = {
@@ -200,6 +205,7 @@ async function addCar() {
             document.getElementById('anoInput').value = '';
             showHideAddCar();
             hideSpinnerButtonPub();
+            isPublished = false;
         } else {
             hideSpinnerButtonPub()
             console.log("Error 351");
