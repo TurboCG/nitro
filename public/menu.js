@@ -164,6 +164,7 @@ function closeCard(element) {
     element.style.display = "none";
 }
 async function addCar() {
+    showSpinnerButtonPub()
     try {
         const auto = {
             usuario_id: usuarioActual,
@@ -179,6 +180,7 @@ async function addCar() {
         // Validaciones básicas
         if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado) {
             console.log("Error 311");
+            hideSpinnerButtonPub()
             return;
         }
 
@@ -198,12 +200,25 @@ async function addCar() {
             document.getElementById('kilometrajeInput').value = '';
             document.getElementById('arreglosInput').value = '';
             document.getElementById('anoInput').value = '';
+            showHideAddCar;
+            hideSpinnerButtonPub;
         } else {
+            hideSpinnerButtonPub()
             console.log("Error 351");
         }
     } catch(error) {
+        hideSpinnerButtonPub()
         console.log("Error 677");
     }
+}
+
+function showSpinnerButtonPub(){
+    document.getElementById("spinner").style.display = "block";
+    document.getElementById("labelButton").style.display = "none";
+}
+function hideSpinnerButtonPub(){
+    document.getElementById("spinner").style.display = "none";
+    document.getElementById("labelButton").style.display = "block";
 }
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
