@@ -166,7 +166,7 @@ function closeCard(element) {
 async function addCar() {
     try {
         const auto = {
-            usuario_id: usuarioActual.id,
+            usuario_id: usuarioActual,
             patente: document.getElementById('patenteInput').value,
             marca: document.getElementById('marcaInput').value,
             modelo: document.getElementById('modeloInput').value,
