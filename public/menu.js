@@ -187,6 +187,8 @@ function hideShowVerifyPub(){
     if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
+    }else{
+        showHideAddCar();
     }
 }
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
