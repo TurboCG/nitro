@@ -324,7 +324,13 @@ h1, h3 {
   justify-self: center;
 }
 
+.blackFilter {
+    filter: brightness(0);
+}
 
+.bigSpinner {
+    width: 60px;
+}
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

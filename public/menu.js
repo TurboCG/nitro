@@ -28,6 +28,8 @@ function setProps() {
 }
 
 async function loadStats() {
+    document.getElementById('spinnerStat').style.display = "block";
+    document.getElementById('spinnerStat2').style.display = "block";
     try {
         const usuarioStr = sessionStorage.getItem('usuarioActual');
         if (!usuarioStr) {
@@ -46,8 +48,8 @@ async function loadStats() {
             if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
             const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
             if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
-            autosPendientes.classList.remove("blurLabel");
-            totalAutos.classList.remove("blurLabel");
+            document.getElementById('spinnerStat').style.display = "none";
+            document.getElementById('spinnerStat2').style.display = "none";
         }   
     } catch(error) {
         console.error('Error cargando estadísticas:', error);  
