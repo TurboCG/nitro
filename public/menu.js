@@ -171,7 +171,7 @@ async function addCar() {
             marca: document.getElementById('marcaInput').value,
             modelo: document.getElementById('modeloInput').value,
             kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
-            ano: parseInt(document.getElementById('anoInput').value),
+            ano: document.getElementById('anoInput').value,
             problema: document.getElementById('arreglosInput').value,
             estado: document.getElementById("statusInput").value
         };
