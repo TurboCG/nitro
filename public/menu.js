@@ -192,22 +192,32 @@ function hideShowVerifyPub(){
 async function checkAuth() {
     try {
         const response = await fetch(`${API_URL}/api/verify-session`, {
-            credentials: 'include'  // Enviar la cookie
+            credentials: 'include'  // Envía la cookie HttpOnly automáticamente
         });
         
         if (response.ok) {
             const data = await response.json();
-            return data.user;
+            // Si hay sesión pero no datos UI, los recreamos
+            if (!usuarioUI && data.user) {
+                usuarioUI = {
+                    nombre: data.user.nombre,
+                    apellido: data.user.apellido || '',
+                    email: data.user.email
+                };
+                sessionStorage.setItem('userUI', JSON.stringify(usuarioUI));
+                setProps(); // Re-ejecutar la UI
+            }
         } else {
+            // Sesión inválida, redirigir
             window.location.href = 'index.html';
-            return null;
         }
     } catch(error) {
         console.error('Error verificando sesión:', error);
-        window.location.href = 'index.html';
-        return null;
+        // Si hay error de red, no redirigir inmediatamente
+        // pero mostrar un mensaje
     }
 }
+
 document.addEventListener('DOMContentLoaded', async () => {
     const user = await checkAuth();
     if (user) {
