@@ -177,9 +177,10 @@ h1, h3 {
 }
 
 .backButton {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+    position: absolute;
+    top: 20px;
+    left: 20px;
 }
 
 .openxpp {
@@ -258,25 +259,27 @@ h1, h3 {
 }
 
 .addCarExpand {
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
     border-radius: 20px;
     font-size: 16px;
     padding: 20px;
-    outline-color: #ff0000;
+    outline: 2px solid transparent;
     border: 0;
     background-color: #ffffffa9;
     width: stretch;
     display: flex;
-
 }
 
-
+.addCarExpand:focus{
+    outline-color: #ff0000;
+}
 .inputInformation {
+    overflow: visible;
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: stretch;
     padding-top: 5px;
-    overflow-y: scroll;
 }
 
 .accentColorButton {
@@ -299,6 +302,9 @@ h1, h3 {
 .iconTab {
     align-self: center;
     width: 30px;
+}
+.backButton:hover {
+    scale: 0.8;
 }
 
 @media (min-device-width: 800px) {
@@ -334,4 +340,17 @@ h1, h3 {
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+@keyframes scale {
+    to {scale: 0.8;}
+}
+@keyframes unscale {
+    to {scale: 1.0;}
+}
+
+.unscalle {
+    animation: unscale 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.scalle {
+    animation: scale 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 }

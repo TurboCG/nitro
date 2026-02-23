@@ -191,6 +191,23 @@ function hideShowVerifyPub(){
         showHideAddCar();
     }
 }
+
+document.getElementById("backk").addEventListener('touchstart', () => {
+    document.getElementById("backk").classList.remove('unscalle');
+    document.getElementById("backk").classList.add('scalle');
+});
+document.getElementById("backAddCar").addEventListener('touchstart', () => {
+    document.getElementById("backAddCar").classList.remove('unscalle');
+    document.getElementById("backAddCar").classList.add('scalle');
+});
+document.getElementById("ProfileButton").addEventListener('touchstart', () => {
+    document.getElementById("ProfileButton").classList.remove('unscalle');
+    document.getElementById("ProfileButton").classList.add('scalle');
+});
+document.getElementById("addCarPiolaButton").addEventListener('touchstart', () => {
+    document.getElementById("addCarPiolaButton").classList.remove('unscalle');
+    document.getElementById("addCarPiolaButton").classList.add('scalle');
+});
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
 document.getElementById("backAddCar").onclick = hideShowVerifyPub;
