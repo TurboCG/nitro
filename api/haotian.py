@@ -138,7 +138,7 @@ def crear_auto():
     """Agregar nuevo auto al taller"""
     try:
         data = request.json
-        required_fields = ['usuario_id', 'patente', 'marca', 'modelo', 'kilometraje', 'ano', 'problema']
+        required_fields = ['usuario_id', 'patente', 'marca', 'modelo', 'kilometraje', 'ano', 'problema', 'fecha_ingreso']
         
         # Verificar campos requeridos
         for field in required_fields:
@@ -152,8 +152,8 @@ def crear_auto():
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO autos 
-            (usuario_id, patente, marca, modelo, kilometraje, ano, problema, estado) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            (usuario_id, patente, marca, modelo, kilometraje, ano, problema, estado, fecha_ingreso) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (
             data['usuario_id'],
@@ -163,7 +163,8 @@ def crear_auto():
             data['kilometraje'],
             data['ano'],
             data['problema'],
-            data.get('estado', 'pendiente')
+            data.get('estado', 'pendiente'),
+            data['fecha_ingreso']
         ))
         
         auto_id = cur.fetchone()[0]

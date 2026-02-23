@@ -174,11 +174,12 @@ async function addCar() {
             kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
             ano: parseInt(document.getElementById('anoInput').value),
             problema: document.getElementById('arreglosInput').value,
-            estado: document.getElementById("statusInput").value
+            estado: document.getElementById("statusInput").value,
+            fecha_ingreso: document.getElementById("dateInput").value
         };
 
         // Validaciones básicas
-        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado) {
+        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado || !auto.fecha_ingreso) {
             console.log("Error 311");
             hideSpinnerButtonPub()
             return;
