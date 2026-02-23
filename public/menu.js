@@ -200,8 +200,8 @@ async function addCar() {
             document.getElementById('kilometrajeInput').value = '';
             document.getElementById('arreglosInput').value = '';
             document.getElementById('anoInput').value = '';
-            showHideAddCar;
-            hideSpinnerButtonPub;
+            showHideAddCar();
+            hideSpinnerButtonPub();
         } else {
             hideSpinnerButtonPub()
             console.log("Error 351");
