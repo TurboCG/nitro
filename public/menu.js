@@ -89,6 +89,7 @@ function showHideAddCar() {
     if (inputInf.style.display == "none") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
+        return;
     }
     if (menu.classList.contains("openxpp")) {
         menu.classList.remove("openxpp");
