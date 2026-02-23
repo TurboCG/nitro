@@ -62,6 +62,7 @@ function showHideAddCar() {
     if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
+        return;
     }
 
     toggleMenu("carOptionsMenu", "openxpp", "closexpp");
