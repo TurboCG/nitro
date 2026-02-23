@@ -6,6 +6,7 @@ function hideSpinner() {
     document.getElementById("spinner").style.display = "none"
     document.getElementById("labelButton").style.display = "block"
 }
+
 function showSpinner() {
     document.getElementById("spinner").style.display = "block"
     document.getElementById("labelButton").style.display = "none"
@@ -14,6 +15,7 @@ function mostrarExito(mensaje) {
     alert('✅ ' + mensaje);
 }
 async function login() {
+    
     try {
         const dniEmail = document.getElementById('dniEmail').value.trim();
         const password = document.getElementById('password').value;
@@ -26,22 +28,18 @@ async function login() {
         const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ dniEmail, password }),
-            credentials: 'include' 
+            body: JSON.stringify({
+                dniEmail: dniEmail,
+                password: password
+            })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            const userUI = {
-                nombre: data.user.nombre,
-                apellido: data.user.apellido || '',
-                email: data.user.email,
-                id: data.user.id  // Guardar ID también
-            };
-            sessionStorage.setItem('userUI', JSON.stringify(userUI));
-            sessionStorage.removeItem('usuarioActual');
-            sessionStorage.removeItem('userID');
+            sessionStorage.setItem('usuarioActual', JSON.stringify(data.user));
+            sessionStorage.setItem('userID', data.user.id);
+            mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
             hideSpinner();
             window.location.href = 'menu.html';
         } else {

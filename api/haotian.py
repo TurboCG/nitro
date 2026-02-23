@@ -6,24 +6,15 @@ from psycopg.rows import dict_row
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 import logging
-from flask_jwt_extended import create_access_token, JWTManager, get_jwt_identity, jwt_required
-from datetime import timedelta
-import datetime
+
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'g*(3)e4m%7h*waro0(hr9f_(ys$pzy*ju&3&=9mti#8_k47b6_')  # Cambiar en producción
-CORS(app, origins=['https://nitro-f68k.onrender.com'], supports_credentials=True, methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allow_headers=['Content-Type', 'Authorization'])
-app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-cambiar-en-produccion')
-app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_COOKIE_SECURE'] = True  # Solo HTTPS
-app.config['JWT_COOKIE_HTTPONLY'] = True  # No accesible desde JS
-app.config['JWT_COOKIE_SAMESITE'] = 'Lax'  # Protección CSRF básica
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=8)  # Sesión de 8 horas
-app.config['JWT_COOKIE_DOMAIN'] = None  # Ajusta si usas subdom
-jwt = JWTManager(app)
+CORS(app, origins=['https://nitro-f68k.onrender.com', 'https://nitro-api-0hw3.onrender.com'])
+
 # Configuración de la base de datos (NeonDB)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
@@ -55,16 +46,17 @@ def home():
     })
 
 @app.route('/api/login', methods=['POST'])
-@app.route('/api/login', methods=['POST'])
 def login():
-    """Login de mecánicos con cookie HttpOnly y Secure"""
+    """Login de mecánicos (con email o DNI)"""
     try:
         data = request.json
-        print("📥 Datos recibidos en API:", data)
+        print("📥 Datos recibidos en API:", data)  # Log para debug
         
+        # El frontend envía 'dniEmail' (puede ser DNI o email)
         dniEmail = data.get('dniEmail')
         password = data.get('password')
         
+        # Validación básica
         if not dniEmail or not password:
             return jsonify({
                 "success": False, 
@@ -76,6 +68,8 @@ def login():
             return jsonify({"success": False, "error": "Error de conexión a DB"}), 500
         
         cur = conn.cursor(row_factory=dict_row)
+        
+        # Buscar por email O por dni (usando OR)
         cur.execute("""
             SELECT * FROM usuarios 
             WHERE email = %s OR dni = %s
@@ -85,39 +79,15 @@ def login():
         cur.close()
         conn.close()
         
+        # Verificar si encontró usuario y la contraseña coincide
         if user and check_password_hash(user['password'], password):
-            # Crear token JWT con información del usuario
-            access_token = create_access_token(
-                identity=str(user['id']),
-                additional_claims={
-                    'nombre': user['nombre'],
-                    'email': user['email'],
-                    'dni': user['dni']
-                }
-            )
-            
-            # No enviar la contraseña
+            # No enviar la contraseña al frontend
             del user['password']
-            
-            # Crear respuesta
-            response = jsonify({
+            return jsonify({
                 "success": True,
                 "user": user,
                 "message": f"Bienvenido {user['nombre']}"
             })
-            
-            # Establecer cookie HttpOnly y Secure
-            response.set_cookie(
-                'access_token_cookie',
-                value=access_token,
-                httponly=True,
-                secure=True,  # Solo HTTPS
-                samesite='Lax',
-                max_age=28800,  # 8 horas en segundos
-                path='/'
-            )
-            
-            return response
         else:
             return jsonify({
                 "success": False, 
@@ -125,44 +95,8 @@ def login():
             }), 401
             
     except Exception as e:
-        print(f"❌ Error en login: {e}")
+        print(f"❌ Error en login: {e}")  # Log para debug
         return jsonify({"success": False, "error": str(e)}), 500
-    
-@app.route('/api/verify-session', methods=['GET'])
-@jwt_required()
-def verify_session():
-    """Verificar si la sesión es válida"""
-    try:
-        user_id = get_jwt_identity()
-        
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({"error": "Error de conexión"}), 500
-        
-        cur = conn.cursor(row_factory=dict_row)
-        cur.execute("SELECT id, nombre, email, dni FROM usuarios WHERE id = %s", (user_id,))
-        user = cur.fetchone()
-        cur.close()
-        conn.close()
-        
-        if user:
-            return jsonify({
-                "success": True,
-                "user": user
-            })
-        else:
-            return jsonify({"success": False, "error": "Usuario no encontrado"}), 401
-            
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 401
-
-@app.route('/api/logout', methods=['POST'])
-def logout():
-    """Cerrar sesión eliminando la cookie"""
-    response = jsonify({"success": True, "message": "Sesión cerrada"})
-    response.delete_cookie('access_token_cookie', path='/', secure=True, httponly=True, samesite='Lax')
-    return response
-
 
 @app.route('/api/autos', methods=['GET'])
 def get_autos():
@@ -355,15 +289,20 @@ def register():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/estadisticas/<int:usuario_id>', methods=['GET'])
-def get_estadisticas():
+def get_estadisticas(usuario_id):
+    """Estadísticas del taller"""
     try:
-        usuario_id = get_jwt_identity()
         conn = get_db_connection()
         if not conn:
             return jsonify({"error": "Error de conexión"}), 500
+        
         cur = conn.cursor(row_factory=dict_row)
+        
+        # Total de autos
         cur.execute("SELECT COUNT(*) as total FROM autos WHERE usuario_id = %s", (usuario_id,))
         total = cur.fetchone()
+        
+        # Autos por estado
         cur.execute("""
             SELECT estado, COUNT(*) as cantidad 
             FROM autos 
@@ -371,6 +310,8 @@ def get_estadisticas():
             GROUP BY estado
         """, (usuario_id,))
         estados = cur.fetchall()
+        
+        # Autos este mes
         cur.execute("""
             SELECT COUNT(*) as cantidad 
             FROM autos 
@@ -378,8 +319,10 @@ def get_estadisticas():
             AND EXTRACT(MONTH FROM fecha_ingreso) = EXTRACT(MONTH FROM CURRENT_DATE)
         """, (usuario_id,))
         mes_actual = cur.fetchone()
+        
         cur.close()
         conn.close()
+        
         return jsonify({
             "total_autos": total['total'] if total else 0,
             "por_estado": estados,
