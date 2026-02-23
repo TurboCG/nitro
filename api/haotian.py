@@ -14,8 +14,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'clave-secreta-para-taller')  # Cambiar en producción
-CORS(app, origins=['https://nitro-f68k.onrender.com', 'https://nitro-api-0hw3.onrender.com'])
+app.secret_key = os.environ.get('SECRET_KEY', 'g*(3)e4m%7h*waro0(hr9f_(ys$pzy*ju&3&=9mti#8_k47b6_')  # Cambiar en producción
+CORS(app, origins=['https://nitro-f68k.onrender.com'], supports_credentials=True, methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allow_headers=['Content-Type', 'Authorization'])
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-cambiar-en-produccion')
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_SECURE'] = True  # Solo HTTPS
