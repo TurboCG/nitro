@@ -44,7 +44,7 @@ async function registrarMecanico() {
         showSpinner();
         
         // ⚠️ CAMBIO: register NO requiere autenticación
-        const response = await fetch(`/api/register`, {
+        const response = await fetch(`${CONFIG.API_URL}/api/register`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

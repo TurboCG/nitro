@@ -29,7 +29,7 @@ async function login() {
         showSpinner();
         
         // ⚠️ CAMBIO IMPORTANTE: Ya no usamos credentials: 'include'
-        const response = await fetch(`/api/login`, {
+        const response = await fetch(`${CONFIG.API_URL}/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
