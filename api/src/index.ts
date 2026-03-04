@@ -13,8 +13,16 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const allowedOrigins = [
+    'https://nitro-f68k.onrender.com',  // Sin barra al final
+    'https://nitro-api-0hw3.onrender.com', // Si es necesario
+    'http://localhost:5000'
+];
 // Middlewares
+app.use(cors({
+    origin: 'https://nitro-f68k.onrender.com', // Sin barra al final
+    credentials: true
+}));
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5000',
     credentials: true
