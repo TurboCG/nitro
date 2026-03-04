@@ -5,44 +5,39 @@ dotenv.config();
 
 console.log('🔌 Configurando conexión a NeonDB...');
 
-// ✅ Configuración específica para Render + NeonDB
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     },
-    // Timeouts más largos para Render
-    connectionTimeoutMillis: 30000, // 30 segundos
+    connectionTimeoutMillis: 30000,
     idleTimeoutMillis: 30000,
-    // Permitir hasta 20 conexiones simultáneas
     max: 20,
-    // Mantener conexiones vivas
     keepAlive: true,
     keepAliveInitialDelayMillis: 10000
 });
 
-// Evento cuando se conecta
 pool.on('connect', () => {
     console.log('✅ Conectado a NeonDB');
 });
 
-// Evento cuando hay error
 pool.on('error', (err) => {
     console.error('❌ Error en pool de NeonDB:', err.message);
 });
 
-// Intentar conexión inicial
-pool.connect((err, client, release) => {
+// ✅ CORREGIDO: Usar los tipos correctos
+pool.connect((err: Error | undefined, client, release) => {
     if (err) {
-        console.error('❌ Error conectando a NeonDB:');
-        console.error('Mensaje:', err.message);
-        console.error('Código:', err.code);
+        console.error('❌ Error conectando a NeonDB:', err.message);
         
-        // Sugerencias según el error
         if (err.message.includes('timeout')) {
             console.log('⏱️  Timeout - Posibles soluciones:');
+            console.log('   1. En Render, agrega variable: PGSSLMODE=require');
+            console.log('   2. En Neon Dashboard → Settings → IP Allow:');
+            console.log('      Agrega "0.0.0.0/0" (temporal)');
+            console.log('   3. Verifica que la URL de DATABASE_URL es correcta');
         }
-    } else {
+    } else if (client) {
         console.log('✅ Conectado exitosamente a NeonDB');
         release();
     }
