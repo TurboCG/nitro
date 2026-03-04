@@ -1,29 +1,31 @@
-const API_URL = 'https://nitro-api-0hw3.onrender.com'; 
+// mainmenu.js - Versión migrada a JWT
 const nombreMecanico = document.getElementById('nombreMecanico');
 const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
-const usuarioStr = sessionStorage.getItem('usuarioActual');
-const usuarioActual = sessionStorage.getItem("userID");
 var isPublished = false;
 var tab = 0;
+
+// Verificar autenticación al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    const usuario = obtenerUsuario();
+    if (!usuario) {
+        window.location.href = 'index.html';
+        return;
+    }
+    setProps();
+    loadAutos(); // Cargar autos al iniciar
+});
+
 function setProps() {
     const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
     const indiceAleatorio = Math.floor(Math.random() * opciones.length);
     const seleccion = opciones[indiceAleatorio];
     document.getElementById("saludo").textContent = seleccion;
-    if (usuarioStr) {
-    const usuario = JSON.parse(usuarioStr);
-    console.log('Nombre:', usuario.nombre);
-    console.log('Apellido:', usuario.apellido);
-    console.log('Email:', usuario.email);
-    console.log('DNI:', usuario.dni);
-    console.log('ID:', usuario.id);
     
-    // Mostrar en el HTML
-    document.getElementById('nombreMecanico').textContent = usuario.nombre;
-    document.getElementById('nombreMecanico2').textContent = usuario.nombre;
-    } else {
-        // window.location.href = 'index.html';
+    const usuario = obtenerUsuario();
+    if (usuario) {
+        document.getElementById('nombreMecanico').textContent = usuario.nombre;
+        document.getElementById('nombreMecanico2').textContent = usuario.nombre;
     }
     loadStats();
 }
@@ -31,36 +33,171 @@ function setProps() {
 async function loadStats() {
     document.getElementById('spinnerStat').style.display = "block";
     document.getElementById('spinnerStat2').style.display = "block";
+    
     try {
-        const usuarioStr = sessionStorage.getItem('usuarioActual');
-        if (!usuarioStr) {
-            console.log('No hay usuario logueado');
-            return;
-        }else{
-            const usuario = JSON.parse(usuarioStr);
-            const userId = usuario.id; 
-            console.log('Cargando stats para usuario:', userId);
-            const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const stats = await response.json();
-            console.log('Estadísticas recibidas:', stats);
-            if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
-            const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
-            if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
-            document.getElementById('spinnerStat').style.display = "none";
-            document.getElementById('spinnerStat2').style.display = "none";
-        }   
+        const usuario = obtenerUsuario();
+        if (!usuario) return;
+        
+        // ✅ Usar apiFetch que ya maneja tokens y URL base
+        const stats = await apiFetch(`/api/estadisticas/${usuario.id}`);
+        
+        console.log('Estadísticas:', stats);
+        
+        if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
+        
+        const listo = stats.por_estado?.find(e => 
+            e.estado === 'listo' || e.estado === 'terminado'
+        );
+        
+        if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
+        
     } catch(error) {
-        console.error('Error cargando estadísticas:', error);  
+        console.error('Error cargando estadísticas:', error);
+        if (error.message === 'Sesión expirada') {
+            window.location.href = 'index.html';
+        }
+    } finally {
+        document.getElementById('spinnerStat').style.display = "none";
+        document.getElementById('spinnerStat2').style.display = "none";
     }
-
 }
+
+async function loadAutos() {
+    try {
+        const usuario = obtenerUsuario();
+        if (!usuario) return;
+        
+        const autos = await apiFetch(`/api/autos?usuario_id=${usuario.id}`);
+        renderAutos(autos);
+        
+    } catch(error) {
+        console.error('Error cargando autos:', error);
+    }
+}
+
+function renderAutos(autos) {
+    const container = document.getElementById('autosContainer'); // Asegúrate de tener este contenedor
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    autos.forEach(auto => {
+        const autoCard = document.createElement('div');
+        autoCard.className = 'auto-card';
+        autoCard.innerHTML = `
+            <div class="auto-header">
+                <h3>${auto.patente}</h3>
+                <span class="estado ${auto.estado}">${auto.estado}</span>
+            </div>
+            <div class="auto-details">
+                <p><strong>Marca:</strong> ${auto.marca}</p>
+                <p><strong>Modelo:</strong> ${auto.modelo}</p>
+                <p><strong>Año:</strong> ${auto.ano}</p>
+                <p><strong>KM:</strong> ${auto.kilometraje}</p>
+                <p><strong>Problema:</strong> ${auto.problema}</p>
+                <p><strong>Ingreso:</strong> ${new Date(auto.fecha_ingreso).toLocaleDateString()}</p>
+            </div>
+            <div class="auto-actions">
+                <button onclick="editarAuto(${auto.id})">Editar</button>
+                <button onclick="eliminarAuto(${auto.id})">Eliminar</button>
+            </div>
+        `;
+        container.appendChild(autoCard);
+    });
+}
+
+async function addCar() {
+    isPublished = true;
+    showSpinnerButtonPub();
+    
+    try {
+        const usuario = obtenerUsuario();
+        if (!usuario) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        const auto = {
+            usuario_id: usuario.id,
+            patente: document.getElementById('patenteInput').value,
+            marca: document.getElementById('marcaInput').value,
+            modelo: document.getElementById('modeloInput').value,
+            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
+            ano: parseInt(document.getElementById('anoInput').value),
+            problema: document.getElementById('arreglosInput').value,
+            estado: document.getElementById("statusInput").value,
+            fecha_ingreso: document.getElementById("dateInput").value
+        };
+
+        // Validaciones básicas
+        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado || !auto.fecha_ingreso) {
+            console.error("Campos incompletos");
+            hideSpinnerButtonPub();
+            mostrarError('Completa todos los campos');
+            return;
+        }
+
+        // ✅ Usar apiFetch
+        const result = await apiFetch('/api/autos', {
+            method: 'POST',
+            body: JSON.stringify(auto)
+        });
+        
+        if(result.success) {
+            // Limpiar formulario
+            document.getElementById('patenteInput').value = '';
+            document.getElementById('marcaInput').value = '';
+            document.getElementById('modeloInput').value = '';
+            document.getElementById('kilometrajeInput').value = '';
+            document.getElementById('arreglosInput').value = '';
+            document.getElementById('anoInput').value = '';
+            
+            showHideAddCar();
+            mostrarExito('Auto agregado correctamente');
+            loadAutos(); // Recargar lista
+            loadStats(); // Actualizar estadísticas
+        }
+        
+    } catch(error) {
+        console.error('Error agregando auto:', error);
+        mostrarError('Error al agregar auto');
+    } finally {
+        hideSpinnerButtonPub();
+        isPublished = false;
+    }
+}
+
+async function eliminarAuto(autoId) {
+    if (!confirm('¿Estás seguro de eliminar este auto?')) return;
+    
+    try {
+        const usuario = obtenerUsuario();
+        const result = await apiFetch(`/api/autos/${autoId}?usuario_id=${usuario.id}`, {
+            method: 'DELETE'
+        });
+        
+        if (result.success) {
+            mostrarExito('Auto eliminado');
+            loadAutos();
+            loadStats();
+        }
+        
+    } catch(error) {
+        console.error('Error eliminando auto:', error);
+        mostrarError('Error al eliminar auto');
+    }
+}
+
+async function editarAuto(autoId) {
+    // Implementar según tu UI
+    console.log('Editar auto:', autoId);
+}
+
+// Funciones de UI (sin cambios)
 function showHideAddCar() {
     const inputInf = document.getElementById("inputInf");
     const inputInfConfirm = document.getElementById("inputInfConfirm");
-    // Tu lógica de negocio específica
+    
     if (inputInf.style.display === "none" || inputInf.style.display === "") {
         inputInf.style.display = "flex";
         inputInfConfirm.style.display = "none";
@@ -71,27 +208,11 @@ function showHideAddCar() {
 function showHideMenuProfile() {
     toggleMenu("accountOptionsMenu", "openxpp", "closexpp");
 }
+
 function loadCacheConfirm() {
     refreshVerify();
-    document.getElementById("inputInf").style.display = "none"
-    document.getElementById("inputInfConfirm").style.display = "flex"
-}
-
-
-const button = document.getElementById('invokeDate');
-const dateInput = document.getElementById('dateInput');
-const dateInputLabel = document.getElementById("spanDateLabelButton")
-button.addEventListener('click', () => {
-    dateInput.showPicker(); 
-});
-
-// Opcional: ver qué fecha eligió el usuario
-dateInput.addEventListener('change', () => {
-    dateInputLabel.textContent = dateInput.value
-});
-setProps();
-function closeCard(element) {
-    element.style.display = "none";
+    document.getElementById("inputInf").style.display = "none";
+    document.getElementById("inputInfConfirm").style.display = "flex";
 }
 
 function toggleMenu(menuId, openClass, closeClass) {
@@ -124,85 +245,18 @@ function toggleMenu(menuId, openClass, closeClass) {
     }
 }
 
-async function addCar() {
-    isPublished = true;
-    showSpinnerButtonPub()
-    try {
-        const auto = {
-            usuario_id: usuarioActual,
-            patente: document.getElementById('patenteInput').value,
-            marca: document.getElementById('marcaInput').value,
-            modelo: document.getElementById('modeloInput').value,
-            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
-            ano: parseInt(document.getElementById('anoInput').value),
-            problema: document.getElementById('arreglosInput').value,
-            estado: document.getElementById("statusInput").value,
-            fecha_ingreso: document.getElementById("dateInput").value
-        };
-
-        // Validaciones básicas
-        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado || !auto.fecha_ingreso) {
-            console.log("Error 311");
-            hideSpinnerButtonPub()
-            return;
-        }
-
-        const response = await fetch(`${API_URL}/api/autos`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(auto)
-        });
-        
-        const result = await response.json();
-        
-        if(result.success) {
-            // Limpiar formulario
-            document.getElementById('patenteInput').value = '';
-            document.getElementById('marcaInput').value = '';
-            document.getElementById('modeloInput').value = '';
-            document.getElementById('kilometrajeInput').value = '';
-            document.getElementById('arreglosInput').value = '';
-            document.getElementById('anoInput').value = '';
-            showHideAddCar();
-            hideSpinnerButtonPub();
-            isPublished = false;
-        } else {
-            hideSpinnerButtonPub()
-            console.log("Error 351");
-        }
-    } catch(error) {
-        hideSpinnerButtonPub()
-        console.log("Error 677");
-    }
-}
-
-function showSpinnerButtonPub(){
-    document.getElementById("spinner").style.display = "block";
-    document.getElementById("labelButton").style.display = "none";
-}
-function hideSpinnerButtonPub(){
-    document.getElementById("spinner").style.display = "none";
-    document.getElementById("labelButton").style.display = "block";
-}
-function hideShowVerifyPub(){
-    if (inputInf.style.display === "none" || inputInf.style.display === "") {
-        inputInf.style.display = "flex";
-        inputInfConfirm.style.display = "none";
-    }else{
-        showHideAddCar();
-    }
-}
-function refreshVerify(){
+function refreshVerify() {
     const fields = {
-    'patenteInput': 'patentePreview',
-    'marcaInput': 'marcaPreview',
-    'modeloInput': 'modeloPreview',
-    'kilometrajeInput': 'kilometrajePreview',
-    'arreglosInput': 'arreglosPreview',
-    'anoInput': 'añoPreview',
-    'statusInput': 'estadoPreview',
-    'dateInput': 'datePreview'
-};
+        'patenteInput': 'patentePreview',
+        'marcaInput': 'marcaPreview',
+        'modeloInput': 'modeloPreview',
+        'kilometrajeInput': 'kilometrajePreview',
+        'arreglosInput': 'arreglosPreview',
+        'anoInput': 'añoPreview',
+        'statusInput': 'estadoPreview',
+        'dateInput': 'datePreview'
+    };
+    
     Object.entries(fields).forEach(([inputId, previewId]) => {
         const inputElement = document.getElementById(inputId);
         const previewElement = document.getElementById(previewId);
@@ -210,29 +264,58 @@ function refreshVerify(){
         if (inputElement && previewElement) {
             const valor = inputElement.value.trim();
             previewElement.textContent = valor || "(sin establecer)";
-        } else {
-            console.warn(`Che, fijate que no encontré: ${inputId} o ${previewId}`);
         }
     });
-        
 }
 
-document.getElementById("backk").addEventListener('touchstart', () => {
-    document.getElementById("backk").classList.remove('unscalle');
-    document.getElementById("backk").classList.add('scalle');
+function hideShowVerifyPub() {
+    const inputInf = document.getElementById("inputInf");
+    if (inputInf.style.display === "none" || inputInf.style.display === "") {
+        inputInf.style.display = "flex";
+        inputInfConfirm.style.display = "none";
+    } else {
+        showHideAddCar();
+    }
+}
+
+// Spinner functions
+function showSpinnerButtonPub() {
+    document.getElementById("spinner").style.display = "block";
+    document.getElementById("labelButton").style.display = "none";
+}
+
+function hideSpinnerButtonPub() {
+    document.getElementById("spinner").style.display = "none";
+    document.getElementById("labelButton").style.display = "block";
+}
+
+// Date picker
+const button = document.getElementById('invokeDate');
+const dateInput = document.getElementById('dateInput');
+const dateInputLabel = document.getElementById("spanDateLabelButton");
+
+if (button && dateInput) {
+    button.addEventListener('click', () => {
+        dateInput.showPicker();
+    });
+
+    dateInput.addEventListener('change', () => {
+        if (dateInputLabel) dateInputLabel.textContent = dateInput.value;
+    });
+}
+
+// Touch animations
+['backk', 'backAddCar', 'ProfileButton', 'addCarPiolaButton'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener('touchstart', () => {
+            el.classList.remove('unscalle');
+            el.classList.add('scalle');
+        });
+    }
 });
-document.getElementById("backAddCar").addEventListener('touchstart', () => {
-    document.getElementById("backAddCar").classList.remove('unscalle');
-    document.getElementById("backAddCar").classList.add('scalle');
-});
-document.getElementById("ProfileButton").addEventListener('touchstart', () => {
-    document.getElementById("ProfileButton").classList.remove('unscalle');
-    document.getElementById("ProfileButton").classList.add('scalle');
-});
-document.getElementById("addCarPiolaButton").addEventListener('touchstart', () => {
-    document.getElementById("addCarPiolaButton").classList.remove('unscalle');
-    document.getElementById("addCarPiolaButton").classList.add('scalle');
-});
+
+// Event listeners
 document.getElementById("ProfileButton").onclick = showHideMenuProfile;
 document.getElementById("backk").onclick = showHideMenuProfile;
 document.getElementById("backAddCar").onclick = hideShowVerifyPub;
@@ -242,13 +325,15 @@ document.getElementById("buttonCheckPost").onclick = addCar;
 document.getElementById("historyButton").onclick = historyT;
 document.getElementById("homeButton").onclick = mainT;
 document.getElementById("historialPiolaAutosButton").onclick = historyT;
+
+// Tab functions
 function updateContent() {
-    if (tab == 0){
+    if (tab == 0) {
         document.getElementById("mainTabContent").style.display = "flex";
         document.getElementById("historyTabContent").style.display = "none";
         document.getElementById("homeButton").style.opacity = 1;
         document.getElementById("historyButton").style.opacity = 0.5;
-    }else{
+    } else {
         document.getElementById("mainTabContent").style.display = "none";
         document.getElementById("historyTabContent").style.display = "flex";
         document.getElementById("homeButton").style.opacity = 0.5;
@@ -259,8 +344,15 @@ function updateContent() {
 function historyT() {
     tab = 1;
     updateContent();
+    loadAutos(); // Cargar autos para el historial si es necesario
 }
+
 function mainT() {
     tab = 0;
     updateContent();
+}
+
+// Cerrar sesión
+function logout() {
+    cerrarSesion();
 }
