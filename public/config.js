@@ -1,8 +1,7 @@
 // config.js
 const CONFIG = {
-    // Cambia esta URL cuando despliegues tu backend Node.js
     API_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5000'  // API local
+        ? ''  // API local
         : 'https://nitro-api-adms.onrender.com', // API producción
     
     // Keys para localStorage
