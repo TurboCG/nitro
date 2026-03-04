@@ -8,7 +8,7 @@
     backdrop-filter: blur(10px);
     align-items: center;
     height: 100px;
-
+    z-index: 5;
 }
 
 body {
@@ -108,6 +108,7 @@ h1, h3 {
 }
 
 .loginOptions{
+    z-index: 90;
     position:absolute;
     width: stretch;
     height: 90%;
@@ -167,6 +168,7 @@ h1, h3 {
 }
 
 .blackBG {
+    z-index: 15;
     display: none;
     position: absolute;
     top: 0;
