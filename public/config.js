@@ -3,7 +3,7 @@ const CONFIG = {
     // Cambia esta URL cuando despliegues tu backend Node.js
     API_URL: window.location.hostname === 'localhost' 
         ? 'http://localhost:5000'  // API local
-        : 'https://nitro-api-0hw3.onrender.com', // API producción
+        : 'https://nitro-api-adms.onrender.com', // API producción
     
     // Keys para localStorage
     TOKEN_KEY: 'auth_token',
