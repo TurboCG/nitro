@@ -367,6 +367,7 @@ h1, h3 {
     position: relative;
     width: 100%;
     overflow: hidden;
+    display: flex;
     min-height: 500px; /* Ajusta según tu contenido */
 }
 
