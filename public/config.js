@@ -1,8 +1,6 @@
 // config.js
 const CONFIG = {
-    API_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? ''  // API local
-        : 'https://nitro-api-adms.onrender.com', // API producción
+    API_URL: 'https://nitro-api-adms.onrender.com', // API producción
     
     // Keys para localStorage
     TOKEN_KEY: 'auth_token',
