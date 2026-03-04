@@ -3,48 +3,59 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// ✅ Configuración específica para NeonDB
+console.log('🔌 Configurando conexión a NeonDB...');
+
+// ✅ Configuración específica para Render + NeonDB
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false // Necesario para NeonDB
+        rejectUnauthorized: false
     },
-    // Timeouts para evitar esperas innecesarias
-    connectionTimeoutMillis: 5000,
+    // Timeouts más largos para Render
+    connectionTimeoutMillis: 30000, // 30 segundos
     idleTimeoutMillis: 30000,
+    // Permitir hasta 20 conexiones simultáneas
+    max: 20,
+    // Mantener conexiones vivas
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000
 });
 
-// Función helper con mejor logging
-export async function query(text: string, params?: any[]) {
-    const start = Date.now();
-    try {
-        console.log('📤 Ejecutando query:', { text, params });
-        const res = await pool.query(text, params);
-        const duration = Date.now() - start;
-        console.log('📥 Query completada:', { 
-            rows: res.rowCount, 
-            duration: `${duration}ms` 
-        });
-        return res;
-    } catch (error) {
-        console.error('❌ Error en query:', {
-            text,
-            params,
-            error: error instanceof Error ? error.message : error
-        });
-        throw error;
-    }
-}
+// Evento cuando se conecta
+pool.on('connect', () => {
+    console.log('✅ Conectado a NeonDB');
+});
 
-// Para depuración: probar conexión al iniciar
+// Evento cuando hay error
+pool.on('error', (err) => {
+    console.error('❌ Error en pool de NeonDB:', err.message);
+});
+
+// Intentar conexión inicial
 pool.connect((err, client, release) => {
     if (err) {
-        console.error('❌ Error conectando a NeonDB:', err.message);
-        console.log('📌 Verifica que DATABASE_URL en .env sea correcta');
+        console.error('❌ Error conectando a NeonDB:');
+        console.error('Mensaje:', err.message);
+        console.error('Código:', err.code);
+        
+        // Sugerencias según el error
+        if (err.message.includes('timeout')) {
+            console.log('⏱️  Timeout - Posibles soluciones:');
+        }
     } else {
         console.log('✅ Conectado exitosamente a NeonDB');
         release();
     }
 });
+
+export async function query(text: string, params?: any[]) {
+    try {
+        const res = await pool.query(text, params);
+        return res;
+    } catch (error) {
+        console.error('❌ Error en query:', error);
+        throw error;
+    }
+}
 
 export { pool };
