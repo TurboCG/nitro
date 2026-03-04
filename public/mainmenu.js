@@ -4,6 +4,7 @@ const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
 var isPublished = false;
 var tab = 0;
+let isTransitioning = false;
 
 // Verificar autenticación al cargar
 document.addEventListener('DOMContentLoaded', function() {
@@ -342,17 +343,82 @@ function updateContent() {
 }
 
 function historyT() {
-    tab = 1;
-    updateContent();
-    loadAutos(); // Cargar autos para el historial si es necesario
+    switchTab(1);
 }
 
 function mainT() {
-    tab = 0;
-    updateContent();
+    switchTab(0);
 }
 
 // Cerrar sesión
 function logout() {
     cerrarSesion();
 }
+
+function switchTab(targetTab) {
+    if (isTransitioning || tab === targetTab) return;
+    
+    isTransitioning = true;
+    
+    const mainTab = document.getElementById('mainTabContent');
+    const historyTab = document.getElementById('historyTabContent');
+    const homeBtn = document.getElementById('homeButton');
+    const historyBtn = document.getElementById('historyButton');
+    
+    // Determinar dirección de la animación
+    const goingToHistory = targetTab === 1; // 1 = historial, 0 = main
+    
+    // Aplicar animaciones
+    if (goingToHistory) {
+        // Main sale hacia la izquierda
+        mainTab.classList.add('slide-out-left');
+        // Historia entra desde la derecha
+        historyTab.classList.add('slide-in-right');
+        historyTab.style.display = 'flex';
+    } else {
+        // Historia sale hacia la derecha
+        historyTab.classList.add('slide-out-right');
+        // Main entra desde la izquierda
+        mainTab.classList.add('slide-in-left');
+        mainTab.style.display = 'flex';
+    }
+    
+    // Actualizar opacidad de botones
+    homeBtn.style.opacity = goingToHistory ? '0.5' : '1';
+    historyBtn.style.opacity = goingToHistory ? '1' : '0.5';
+    
+    // Limpiar animaciones después de que terminen
+    setTimeout(() => {
+        if (goingToHistory) {
+            mainTab.classList.remove('slide-out-left');
+            historyTab.classList.remove('slide-in-right');
+            mainTab.style.display = 'none';
+        } else {
+            historyTab.classList.remove('slide-out-right');
+            mainTab.classList.remove('slide-in-left');
+            historyTab.style.display = 'none';
+        }
+        
+        tab = targetTab;
+        isTransitioning = false;
+        
+        // Cargar contenido según la pestaña
+        if (targetTab === 1) {
+            loadHistory(); // Función para cargar el historial
+        } else {
+            loadAutos(); // Recargar autos si es necesario
+        }
+    }, 280); // Un poco menos que la duración de la animación
+}
+document.addEventListener('DOMContentLoaded', function() {
+    // ... tu código existente ...
+    
+    // Inicializar pestañas
+    const mainTab = document.getElementById('mainTabContent');
+    const historyTab = document.getElementById('historyTabContent');
+    
+    mainTab.style.display = 'flex';
+    historyTab.style.display = 'none';
+    tab = 0;
+
+});

@@ -14,7 +14,9 @@
         <img src="resources/header_2.svg" alt="" srcset="" class="imageHeader">
         <img src="resources/pfp.png" alt="Opciones de la cuenta" srcset="" class="profile" id="ProfileButton">
     </div>
-    <div class="content main" id="mainTabContent">
+    <!-- Contenedor para las transiciones -->
+<div class="tab-container">
+    <div class="content main active-tab" id="mainTabContent">
         <h1><span id="saludo">¿Qué onda, </span><span id="nombreMecanico">Juan</span>?</h1>
         <div class="doubleRoll">
             <div class="card">
@@ -30,14 +32,14 @@
             <button class="BottomButton" id="addCarPiolaButton">Agregar Nuevo</button>
             <button class="BottomButton buttonYellow" id="historialPiolaAutosButton">Historial</button>
         </div>
-        <h3>Ultimos agregados</h1>
-        <div class="CarEntry" >
-
-        </div>
+        <h3>Ultimos agregados</h3>
+        <div class="CarEntry"></div>
     </div>
-     <div class="content history" id="historyTabContent">
+    
+    <div class="content history" id="historyTabContent">
         <h1>Historial</h1>
     </div>
+</div>
     <div class="navBar">
         <img src="resources/home.svg" alt="" class="iconTab" id="homeButton">
         <img src="resources/history.svg" alt="" class="iconTab" id="historyButton">

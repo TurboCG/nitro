@@ -354,3 +354,115 @@ h1, h3 {
 .scalle {
     animation: scale 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
+
+/* ===== ANIMACIONES DE TRANSICIÓN ===== */
+.content {
+    transition: transform 0.3s ease-in-out, opacity 0.2s ease-in-out;
+    position: relative;
+    width: 100%;
+}
+
+/* Contenedor principal para las transiciones */
+.tab-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    min-height: 500px; /* Ajusta según tu contenido */
+}
+
+/* Animación de entrada desde la derecha */
+.slide-in-right {
+    animation: slideInRight 0.3s forwards;
+}
+
+/* Animación de salida hacia la izquierda */
+.slide-out-left {
+    animation: slideOutLeft 0.3s forwards;
+}
+
+/* Animación de entrada desde la izquierda */
+.slide-in-left {
+    animation: slideInLeft 0.3s forwards;
+}
+
+/* Animación de salida hacia la derecha */
+.slide-out-right {
+    animation: slideOutRight 0.3s forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Transición suave para opacidad */
+.fade-out {
+    animation: fadeOut 0.2s forwards;
+}
+
+.fade-in {
+    animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mejora para los botones del navbar */
+.iconTab {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.iconTab:active {
+    transform: scale(0.9);
+}
+
+.iconTab.active {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.2));
+}
