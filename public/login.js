@@ -1,21 +1,22 @@
-const API_URL = 'https://nitro-api-0hw3.onrender.com'; // Producción
 function mostrarError(mensaje) {
     alert('❌ ' + mensaje);
 }
+
 function hideSpinner() {
-    document.getElementById("spinner").style.display = "none"
-    document.getElementById("labelButton").style.display = "block"
+    document.getElementById("spinner").style.display = "none";
+    document.getElementById("labelButton").style.display = "block";
 }
 
 function showSpinner() {
-    document.getElementById("spinner").style.display = "block"
-    document.getElementById("labelButton").style.display = "none"
+    document.getElementById("spinner").style.display = "block";
+    document.getElementById("labelButton").style.display = "none";
 }
+
 function mostrarExito(mensaje) {
     alert('✅ ' + mensaje);
 }
+
 async function login() {
-    
     try {
         const dniEmail = document.getElementById('dniEmail').value.trim();
         const password = document.getElementById('password').value;
@@ -24,8 +25,11 @@ async function login() {
             mostrarError('Completa todos los campos');
             return;
         }
+        
         showSpinner();
-        const response = await fetch(`${API_URL}/api/login`, {
+        
+        // ⚠️ CAMBIO IMPORTANTE: Ya no usamos credentials: 'include'
+        const response = await fetch(`/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -37,13 +41,14 @@ async function login() {
         const data = await response.json();
         
         if (data.success) {
-            sessionStorage.setItem('usuarioActual', JSON.stringify(data.user));
-            sessionStorage.setItem('userID', data.user.id);
+            // ✅ NUEVO: Guardar token y usuario en localStorage
+            guardarSesion(data.token, data.user);
+            
             mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
             hideSpinner();
             window.location.href = 'menu.html';
         } else {
-            document.getElementById("errorPassw").style.display = "flex"
+            document.getElementById("errorPassw").style.display = "flex";
             hideSpinner();
         }
     } catch(error) {
@@ -52,4 +57,6 @@ async function login() {
         hideSpinner();
     }
 }
+
+// Vincular evento
 document.getElementById("button").onclick = login;

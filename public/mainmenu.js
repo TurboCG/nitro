@@ -1,0 +1,266 @@
+const API_URL = 'https://nitro-api-0hw3.onrender.com'; 
+const nombreMecanico = document.getElementById('nombreMecanico');
+const totalAutos = document.getElementById('cars');
+const autosPendientes = document.getElementById('carsD');
+const usuarioStr = sessionStorage.getItem('usuarioActual');
+const usuarioActual = sessionStorage.getItem("userID");
+var isPublished = false;
+var tab = 0;
+function setProps() {
+    const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
+    const indiceAleatorio = Math.floor(Math.random() * opciones.length);
+    const seleccion = opciones[indiceAleatorio];
+    document.getElementById("saludo").textContent = seleccion;
+    if (usuarioStr) {
+    const usuario = JSON.parse(usuarioStr);
+    console.log('Nombre:', usuario.nombre);
+    console.log('Apellido:', usuario.apellido);
+    console.log('Email:', usuario.email);
+    console.log('DNI:', usuario.dni);
+    console.log('ID:', usuario.id);
+    
+    // Mostrar en el HTML
+    document.getElementById('nombreMecanico').textContent = usuario.nombre;
+    document.getElementById('nombreMecanico2').textContent = usuario.nombre;
+    } else {
+        // window.location.href = 'index.html';
+    }
+    loadStats();
+}
+
+async function loadStats() {
+    document.getElementById('spinnerStat').style.display = "block";
+    document.getElementById('spinnerStat2').style.display = "block";
+    try {
+        const usuarioStr = sessionStorage.getItem('usuarioActual');
+        if (!usuarioStr) {
+            console.log('No hay usuario logueado');
+            return;
+        }else{
+            const usuario = JSON.parse(usuarioStr);
+            const userId = usuario.id; 
+            console.log('Cargando stats para usuario:', userId);
+            const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const stats = await response.json();
+            console.log('Estadísticas recibidas:', stats);
+            if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
+            const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
+            if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
+            document.getElementById('spinnerStat').style.display = "none";
+            document.getElementById('spinnerStat2').style.display = "none";
+        }   
+    } catch(error) {
+        console.error('Error cargando estadísticas:', error);  
+    }
+
+}
+function showHideAddCar() {
+    const inputInf = document.getElementById("inputInf");
+    const inputInfConfirm = document.getElementById("inputInfConfirm");
+    // Tu lógica de negocio específica
+    if (inputInf.style.display === "none" || inputInf.style.display === "") {
+        inputInf.style.display = "flex";
+        inputInfConfirm.style.display = "none";
+    }
+    toggleMenu("carOptionsMenu", "openxpp", "closexpp");
+}
+
+function showHideMenuProfile() {
+    toggleMenu("accountOptionsMenu", "openxpp", "closexpp");
+}
+function loadCacheConfirm() {
+    refreshVerify();
+    document.getElementById("inputInf").style.display = "none"
+    document.getElementById("inputInfConfirm").style.display = "flex"
+}
+
+
+const button = document.getElementById('invokeDate');
+const dateInput = document.getElementById('dateInput');
+const dateInputLabel = document.getElementById("spanDateLabelButton")
+button.addEventListener('click', () => {
+    dateInput.showPicker(); 
+});
+
+// Opcional: ver qué fecha eligió el usuario
+dateInput.addEventListener('change', () => {
+    dateInputLabel.textContent = dateInput.value
+});
+setProps();
+function closeCard(element) {
+    element.style.display = "none";
+}
+
+function toggleMenu(menuId, openClass, closeClass) {
+    const menu = document.getElementById(menuId);
+    const blurBg = document.getElementById("blackBlurBg");
+
+    if (menu.classList.contains(openClass)) {
+        menu.classList.remove(openClass);
+        menu.classList.add(closeClass);
+        blurBg.classList.replace("blurbg", "unblurbg");
+
+        menu.addEventListener('animationend', () => {
+            if (menu.classList.contains(closeClass)) {
+                menu.style.display = "none";
+                blurBg.classList.add("hidden");
+            }
+        }, { once: true });
+
+    } else {
+        menu.style.display = "block";
+        menu.style.opacity = "0";
+        setTimeout(() => {
+            menu.classList.remove(closeClass);
+            menu.classList.add(openClass);
+            menu.style.opacity = "1";
+            blurBg.style.display = "block";
+            blurBg.classList.remove("hidden", "unblurbg");
+            blurBg.classList.add("blurbg");
+        }, 10);
+    }
+}
+
+async function addCar() {
+    isPublished = true;
+    showSpinnerButtonPub()
+    try {
+        const auto = {
+            usuario_id: usuarioActual,
+            patente: document.getElementById('patenteInput').value,
+            marca: document.getElementById('marcaInput').value,
+            modelo: document.getElementById('modeloInput').value,
+            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
+            ano: parseInt(document.getElementById('anoInput').value),
+            problema: document.getElementById('arreglosInput').value,
+            estado: document.getElementById("statusInput").value,
+            fecha_ingreso: document.getElementById("dateInput").value
+        };
+
+        // Validaciones básicas
+        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado || !auto.fecha_ingreso) {
+            console.log("Error 311");
+            hideSpinnerButtonPub()
+            return;
+        }
+
+        const response = await fetch(`${API_URL}/api/autos`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(auto)
+        });
+        
+        const result = await response.json();
+        
+        if(result.success) {
+            // Limpiar formulario
+            document.getElementById('patenteInput').value = '';
+            document.getElementById('marcaInput').value = '';
+            document.getElementById('modeloInput').value = '';
+            document.getElementById('kilometrajeInput').value = '';
+            document.getElementById('arreglosInput').value = '';
+            document.getElementById('anoInput').value = '';
+            showHideAddCar();
+            hideSpinnerButtonPub();
+            isPublished = false;
+        } else {
+            hideSpinnerButtonPub()
+            console.log("Error 351");
+        }
+    } catch(error) {
+        hideSpinnerButtonPub()
+        console.log("Error 677");
+    }
+}
+
+function showSpinnerButtonPub(){
+    document.getElementById("spinner").style.display = "block";
+    document.getElementById("labelButton").style.display = "none";
+}
+function hideSpinnerButtonPub(){
+    document.getElementById("spinner").style.display = "none";
+    document.getElementById("labelButton").style.display = "block";
+}
+function hideShowVerifyPub(){
+    if (inputInf.style.display === "none" || inputInf.style.display === "") {
+        inputInf.style.display = "flex";
+        inputInfConfirm.style.display = "none";
+    }else{
+        showHideAddCar();
+    }
+}
+function refreshVerify(){
+    const fields = {
+    'patenteInput': 'patentePreview',
+    'marcaInput': 'marcaPreview',
+    'modeloInput': 'modeloPreview',
+    'kilometrajeInput': 'kilometrajePreview',
+    'arreglosInput': 'arreglosPreview',
+    'anoInput': 'añoPreview',
+    'statusInput': 'estadoPreview',
+    'dateInput': 'datePreview'
+};
+    Object.entries(fields).forEach(([inputId, previewId]) => {
+        const inputElement = document.getElementById(inputId);
+        const previewElement = document.getElementById(previewId);
+
+        if (inputElement && previewElement) {
+            const valor = inputElement.value.trim();
+            previewElement.textContent = valor || "(sin establecer)";
+        } else {
+            console.warn(`Che, fijate que no encontré: ${inputId} o ${previewId}`);
+        }
+    });
+        
+}
+
+document.getElementById("backk").addEventListener('touchstart', () => {
+    document.getElementById("backk").classList.remove('unscalle');
+    document.getElementById("backk").classList.add('scalle');
+});
+document.getElementById("backAddCar").addEventListener('touchstart', () => {
+    document.getElementById("backAddCar").classList.remove('unscalle');
+    document.getElementById("backAddCar").classList.add('scalle');
+});
+document.getElementById("ProfileButton").addEventListener('touchstart', () => {
+    document.getElementById("ProfileButton").classList.remove('unscalle');
+    document.getElementById("ProfileButton").classList.add('scalle');
+});
+document.getElementById("addCarPiolaButton").addEventListener('touchstart', () => {
+    document.getElementById("addCarPiolaButton").classList.remove('unscalle');
+    document.getElementById("addCarPiolaButton").classList.add('scalle');
+});
+document.getElementById("ProfileButton").onclick = showHideMenuProfile;
+document.getElementById("backk").onclick = showHideMenuProfile;
+document.getElementById("backAddCar").onclick = hideShowVerifyPub;
+document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
+document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;
+document.getElementById("buttonCheckPost").onclick = addCar;
+document.getElementById("historyButton").onclick = historyT;
+document.getElementById("homeButton").onclick = mainT;
+document.getElementById("historialPiolaAutosButton").onclick = historyT;
+function updateContent() {
+    if (tab == 0){
+        document.getElementById("mainTabContent").style.display = "flex";
+        document.getElementById("historyTabContent").style.display = "none";
+        document.getElementById("homeButton").style.opacity = 1;
+        document.getElementById("historyButton").style.opacity = 0.5;
+    }else{
+        document.getElementById("mainTabContent").style.display = "none";
+        document.getElementById("historyTabContent").style.display = "flex";
+        document.getElementById("homeButton").style.opacity = 0.5;
+        document.getElementById("historyButton").style.opacity = 1;
+    }
+}
+
+function historyT() {
+    tab = 1;
+    updateContent();
+}
+function mainT() {
+    tab = 0;
+    updateContent();
+}

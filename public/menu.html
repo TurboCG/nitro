@@ -14,7 +14,7 @@
         <img src="resources/header_2.svg" alt="" srcset="" class="imageHeader">
         <img src="resources/pfp.png" alt="Opciones de la cuenta" srcset="" class="profile" id="ProfileButton">
     </div>
-    <div class="content">
+    <div class="content main" id="mainTabContent">
         <h1><span id="saludo">¿Qué onda, </span><span id="nombreMecanico">Juan</span>?</h1>
         <div class="doubleRoll">
             <div class="card">
@@ -28,13 +28,19 @@
         </div>
         <div class="doubleRoll">
             <button class="BottomButton" id="addCarPiolaButton">Agregar Nuevo</button>
-            <button class="BottomButton buttonYellow">Historial</button>
+            <button class="BottomButton buttonYellow" id="historialPiolaAutosButton">Historial</button>
         </div>
         <h3>Ultimos agregados</h1>
+        <div class="CarEntry" >
+
+        </div>
+    </div>
+     <div class="content history" id="historyTabContent">
+        <h1>Historial</h1>
     </div>
     <div class="navBar">
-        <img src="resources/home.svg" alt="" class="iconTab">
-        <img src="resources/history.svg" alt="" class="iconTab">
+        <img src="resources/home.svg" alt="" class="iconTab" id="homeButton">
+        <img src="resources/history.svg" alt="" class="iconTab" id="historyButton">
     </div>
     <div id="blackBlurBg"class="blackBG"></div>
     <div class="loginOptions closexpp" id="accountOptionsMenu" style="display: none;">
@@ -79,18 +85,18 @@
             </div>
             <div class="inputInformation confirm" style="display:none;" id="inputInfConfirm">
                 <h1 class="h3_2">¿Esta seguro que desea terminar?</h1>
-                <h3 class="h3_2">Patente: <span id="patentePreview"></span></h3>
-                <h3 class="h3_2">Marca: <span id="marcaPreview"></span></h3>
-                <h3 class="h3_2">Modelo: <span id="modeloPreview"></span></h3>
-                <h3 class="h3_2">Kilometraje: <span id="kilometrajePreview"></span></h3>
-                <h3 class="h3_2">Año: <span id="añoePreview"></span></h3>
-                <h3 class="h3_2">Arreglos: <span id="arreglosPreview"></span></h3>
-                <h3 class="h3_2">Estado: <span id="estadoPreview"></span></h3>
-                <h3 class="h3_2">Fecha de entrada: <span id="datePreview"></span></h3>
+                <h3 class="h3_2">Patente: <span id="patentePreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Marca: <span id="marcaPreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Modelo: <span id="modeloPreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Kilometraje: <span id="kilometrajePreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Año: <span id="añoPreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Arreglos: <span id="arreglosPreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Estado: <span id="estadoPreview">(sin establecer)</span></h3>
+                <h3 class="h3_2">Fecha de entrada: <span id="datePreview">(sin establecer)</span></h3>
                 <button id="buttonCheckPost" type="button" class="accentColorButton"><span id="labelButton">Publicar</span><img src="resources/spinner.svg" class="spinner" id="spinner"></button>
             </div>
         </div>
     </div>
-    <script src="menu.js"></script>
+    <script src="mainmenu.js"></script>
 </body>
 </html>

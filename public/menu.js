@@ -1,216 +1,126 @@
-const API_URL = 'https://nitro-api-0hw3.onrender.com'; 
-const nombreMecanico = document.getElementById('nombreMecanico');
-const totalAutos = document.getElementById('cars');
-const autosPendientes = document.getElementById('carsD');
-const usuarioStr = sessionStorage.getItem('usuarioActual');
-const usuarioActual = sessionStorage.getItem("userID");
-var isPublished = false;
-function setProps() {
-    const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
-    const indiceAleatorio = Math.floor(Math.random() * opciones.length);
-    const seleccion = opciones[indiceAleatorio];
-    document.getElementById("saludo").textContent = seleccion;
-    if (usuarioStr) {
-    const usuario = JSON.parse(usuarioStr);
-    console.log('Nombre:', usuario.nombre);
-    console.log('Apellido:', usuario.apellido);
-    console.log('Email:', usuario.email);
-    console.log('DNI:', usuario.dni);
-    console.log('ID:', usuario.id);
-    
-    // Mostrar en el HTML
-    document.getElementById('nombreMecanico').textContent = usuario.nombre;
-    document.getElementById('nombreMecanico2').textContent = usuario.nombre;
-    } else {
-        // window.location.href = 'index.html';
-    }
-    loadStats();
-}
+// menu.js - Este es NUEVO
 
-async function loadStats() {
-    document.getElementById('spinnerStat').style.display = "block";
-    document.getElementById('spinnerStat2').style.display = "block";
+document.addEventListener('DOMContentLoaded', function() {
+    if (!estaAutenticado()) {
+        // Si no hay token, redirigir a login
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    // Mostrar nombre del usuario
+    const usuario = obtenerUsuario();
+    if (usuario) {
+        document.getElementById('nombreUsuario').textContent = usuario.nombre;
+    }
+    
+    // Cargar datos iniciales
+    cargarAutos();
+    cargarEstadisticas();
+});
+
+async function cargarAutos() {
     try {
-        const usuarioStr = sessionStorage.getItem('usuarioActual');
-        if (!usuarioStr) {
-            console.log('No hay usuario logueado');
-            return;
-        }else{
-            const usuario = JSON.parse(usuarioStr);
-            const userId = usuario.id; 
-            console.log('Cargando stats para usuario:', userId);
-            const response = await fetch(`${API_URL}/api/estadisticas/${userId}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const stats = await response.json();
-            console.log('Estadísticas recibidas:', stats);
-            if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
-            const listo = stats.por_estado?.find(e => e.estado === 'listo' || e.estado === 'terminado');
-            if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
-            document.getElementById('spinnerStat').style.display = "none";
-            document.getElementById('spinnerStat2').style.display = "none";
-        }   
+        const usuario = obtenerUsuario();
+        if (!usuario) return;
+        
+        // ✅ Usamos apiFetch que ya incluye el token automáticamente
+        const autos = await apiFetch(`/api/autos?usuario_id=${usuario.id}`);
+        
+        // Renderizar autos (tu código actual de renderizado)
+        renderizarAutos(autos);
+        
     } catch(error) {
-        console.error('Error cargando estadísticas:', error);  
-    }
-
-}
-function showHideAddCar() {
-    const inputInf = document.getElementById("inputInf");
-    const inputInfConfirm = document.getElementById("inputInfConfirm");
-    // Tu lógica de negocio específica
-    if (inputInf.style.display === "none" || inputInf.style.display === "") {
-        inputInf.style.display = "flex";
-        inputInfConfirm.style.display = "none";
-    }
-    toggleMenu("carOptionsMenu", "openxpp", "closexpp");
-    
-}
-
-function showHideMenuProfile() {
-    toggleMenu("accountOptionsMenu", "openxpp", "closexpp");
-}
-function loadCacheConfirm() {
-    document.getElementById("inputInf").style.display = "none"
-    document.getElementById("inputInfConfirm").style.display = "flex"
-}
-
-
-const button = document.getElementById('invokeDate');
-const dateInput = document.getElementById('dateInput');
-const dateInputLabel = document.getElementById("spanDateLabelButton")
-button.addEventListener('click', () => {
-    dateInput.showPicker(); 
-});
-
-// Opcional: ver qué fecha eligió el usuario
-dateInput.addEventListener('change', () => {
-    dateInputLabel.textContent = dateInput.value
-});
-setProps();
-function closeCard(element) {
-    element.style.display = "none";
-}
-
-function toggleMenu(menuId, openClass, closeClass) {
-    const menu = document.getElementById(menuId);
-    const blurBg = document.getElementById("blackBlurBg");
-
-    if (menu.classList.contains(openClass)) {
-        menu.classList.remove(openClass);
-        menu.classList.add(closeClass);
-        blurBg.classList.replace("blurbg", "unblurbg");
-
-        menu.addEventListener('animationend', () => {
-            if (menu.classList.contains(closeClass)) {
-                menu.style.display = "none";
-                blurBg.classList.add("hidden");
-            }
-        }, { once: true });
-
-    } else {
-        menu.style.display = "block";
-        menu.style.opacity = "0";
-        setTimeout(() => {
-            menu.classList.remove(closeClass);
-            menu.classList.add(openClass);
-            menu.style.opacity = "1";
-            blurBg.style.display = "block";
-            blurBg.classList.remove("hidden", "unblurbg");
-            blurBg.classList.add("blurbg");
-        }, 10);
+        console.error('Error cargando autos:', error);
+        mostrarError('Error al cargar los autos');
     }
 }
 
-async function addCar() {
-    isPublished = true;
-    showSpinnerButtonPub()
+async function cargarEstadisticas() {
     try {
-        const auto = {
-            usuario_id: usuarioActual,
-            patente: document.getElementById('patenteInput').value,
-            marca: document.getElementById('marcaInput').value,
-            modelo: document.getElementById('modeloInput').value,
-            kilometraje: parseInt(document.getElementById('kilometrajeInput').value),
-            ano: parseInt(document.getElementById('anoInput').value),
-            problema: document.getElementById('arreglosInput').value,
-            estado: document.getElementById("statusInput").value,
-            fecha_ingreso: document.getElementById("dateInput").value
-        };
-
-        // Validaciones básicas
-        if (!auto.patente || !auto.marca || !auto.kilometraje || !auto.modelo || !auto.ano || !auto.problema || !auto.estado || !auto.fecha_ingreso) {
-            console.log("Error 311");
-            hideSpinnerButtonPub()
-            return;
+        const usuario = obtenerUsuario();
+        if (!usuario) return;
+        
+        const stats = await apiFetch(`/api/estadisticas/${usuario.id}`);
+        
+        // Actualizar UI con estadísticas
+        document.getElementById('totalAutos').textContent = stats.total_autos;
+        document.getElementById('autosMes').textContent = stats.autos_este_mes;
+        
+        // Renderizar gráfico de estados (si existe)
+        if (stats.por_estado) {
+            actualizarGraficoEstados(stats.por_estado);
         }
+        
+    } catch(error) {
+        console.error('Error cargando estadísticas:', error);
+    }
+}
 
-        const response = await fetch(`${API_URL}/api/autos`, {
+async function crearAuto(autoData) {
+    try {
+        const usuario = obtenerUsuario();
+        const nuevoAuto = await apiFetch('/api/autos', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(auto)
+            body: JSON.stringify({
+                ...autoData,
+                usuario_id: usuario.id
+            })
         });
         
-        const result = await response.json();
-        
-        if(result.success) {
-            // Limpiar formulario
-            document.getElementById('patenteInput').value = '';
-            document.getElementById('marcaInput').value = '';
-            document.getElementById('modeloInput').value = '';
-            document.getElementById('kilometrajeInput').value = '';
-            document.getElementById('arreglosInput').value = '';
-            document.getElementById('anoInput').value = '';
-            showHideAddCar();
-            hideSpinnerButtonPub();
-            isPublished = false;
-        } else {
-            hideSpinnerButtonPub()
-            console.log("Error 351");
+        if (nuevoAuto.success) {
+            mostrarExito('Auto agregado correctamente');
+            cargarAutos(); // Recargar lista
+            return true;
         }
     } catch(error) {
-        hideSpinnerButtonPub()
-        console.log("Error 677");
+        mostrarError('Error al crear auto: ' + error.message);
+        return false;
     }
 }
 
-function showSpinnerButtonPub(){
-    document.getElementById("spinner").style.display = "block";
-    document.getElementById("labelButton").style.display = "none";
-}
-function hideSpinnerButtonPub(){
-    document.getElementById("spinner").style.display = "none";
-    document.getElementById("labelButton").style.display = "block";
-}
-function hideShowVerifyPub(){
-    if (inputInf.style.display === "none" || inputInf.style.display === "") {
-        inputInf.style.display = "flex";
-        inputInfConfirm.style.display = "none";
-    }else{
-        showHideAddCar();
+async function actualizarAuto(autoId, autoData) {
+    try {
+        const usuario = obtenerUsuario();
+        const resultado = await apiFetch(`/api/autos/${autoId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                ...autoData,
+                usuario_id: usuario.id
+            })
+        });
+        
+        if (resultado.success) {
+            mostrarExito('Auto actualizado');
+            cargarAutos();
+            return true;
+        }
+    } catch(error) {
+        mostrarError('Error al actualizar: ' + error.message);
+        return false;
     }
 }
 
-document.getElementById("backk").addEventListener('touchstart', () => {
-    document.getElementById("backk").classList.remove('unscalle');
-    document.getElementById("backk").classList.add('scalle');
-});
-document.getElementById("backAddCar").addEventListener('touchstart', () => {
-    document.getElementById("backAddCar").classList.remove('unscalle');
-    document.getElementById("backAddCar").classList.add('scalle');
-});
-document.getElementById("ProfileButton").addEventListener('touchstart', () => {
-    document.getElementById("ProfileButton").classList.remove('unscalle');
-    document.getElementById("ProfileButton").classList.add('scalle');
-});
-document.getElementById("addCarPiolaButton").addEventListener('touchstart', () => {
-    document.getElementById("addCarPiolaButton").classList.remove('unscalle');
-    document.getElementById("addCarPiolaButton").classList.add('scalle');
-});
-document.getElementById("ProfileButton").onclick = showHideMenuProfile;
-document.getElementById("backk").onclick = showHideMenuProfile;
-document.getElementById("backAddCar").onclick = hideShowVerifyPub;
-document.getElementById("addCarPiolaButton").onclick = showHideAddCar;
-document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;
-document.getElementById("buttonCheckPost").onclick = addCar;
+async function eliminarAuto(autoId) {
+    if (!confirm('¿Eliminar este auto?')) return;
+    
+    try {
+        const usuario = obtenerUsuario();
+        const resultado = await apiFetch(`/api/autos/${autoId}?usuario_id=${usuario.id}`, {
+            method: 'DELETE'
+        });
+        
+        if (resultado.success) {
+            mostrarExito('Auto eliminado');
+            cargarAutos();
+        }
+    } catch(error) {
+        mostrarError('Error al eliminar: ' + error.message);
+    }
+}
+
+// Función para logout
+function logout() {
+    if (confirm('¿Cerrar sesión?')) {
+        cerrarSesion();
+    }
+}
