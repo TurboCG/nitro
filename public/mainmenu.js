@@ -40,7 +40,7 @@ async function loadStats() {
         if (!usuario) return;
         
         // ✅ Usar apiFetch que ya maneja tokens y URL base
-        const stats = await apiFetch(`/api/estadisticas/${usuario.id}`);
+        const stats = await apiFetch("/api/estadisticas/globales");
         
         console.log('Estadísticas:', stats);
         

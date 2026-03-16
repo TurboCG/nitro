@@ -46,4 +46,34 @@ router.get('/:usuario_id', async (req: AuthRequest, res) => {
   }
 });
 
+router.get('/estadisticas/globales', async (req: AuthRequest, res) => {
+  try {
+    // Total de autos
+    const totalResult = await query('SELECT COUNT(*) as total FROM autos');
+
+    // Autos por estado
+    const estadosResult = await query(
+      `SELECT estado, COUNT(*) as cantidad 
+       FROM autos 
+       GROUP BY estado`
+    );
+
+    // Autos este mes
+    const mesActualResult = await query(
+      `SELECT COUNT(*) as cantidad 
+       FROM autos 
+       WHERE EXTRACT(MONTH FROM fecha_ingreso) = EXTRACT(MONTH FROM CURRENT_DATE)`
+    );
+
+    res.json({
+      total_autos: parseInt(totalResult.rows[0]?.total || '0'),
+      por_estado: estadosResult.rows,
+      autos_este_mes: parseInt(mesActualResult.rows[0]?.cantidad || '0')
+    });
+  } catch (error) {
+    console.error('Error obteniendo estadísticas globales:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 export default router;

@@ -69,9 +69,7 @@ async function registrarMecanico() {
             document.getElementById('regPassword').value = '';
             document.getElementById('regPassword2').value = '';
             
-            // Ocultar formulario de registro y mostrar login
-            document.getElementById('registroForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
+            window.location.href = 'index';
         } else {
             mostrarError(data.error || 'Error al registrar');
         }
