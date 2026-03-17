@@ -40,7 +40,7 @@ async function cargarEstadisticas() {
         const usuario = obtenerUsuario();
         if (!usuario) return;
         
-        const stats = await apiFetch(`/api/estadisticas/${usuario.id}`);
+        const stats = await apiFetch(`/api/estadisticas/globales`);
         
         // Actualizar UI con estadísticas
         document.getElementById('totalAutos').textContent = stats.total_autos;

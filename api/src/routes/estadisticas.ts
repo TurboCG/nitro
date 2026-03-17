@@ -46,7 +46,7 @@ router.get('/:usuario_id', async (req: AuthRequest, res) => {
   }
 });
 
-router.get('/estadisticas/globales', async (req: AuthRequest, res) => {
+router.get('/globales', async (req: AuthRequest, res) => {
   try {
     // Total de autos
     const totalResult = await query('SELECT COUNT(*) as total FROM autos');
@@ -66,6 +66,7 @@ router.get('/estadisticas/globales', async (req: AuthRequest, res) => {
     );
 
     res.json({
+      tipo: 'global',
       total_autos: parseInt(totalResult.rows[0]?.total || '0'),
       por_estado: estadosResult.rows,
       autos_este_mes: parseInt(mesActualResult.rows[0]?.cantidad || '0')
@@ -75,5 +76,6 @@ router.get('/estadisticas/globales', async (req: AuthRequest, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 
 export default router;
