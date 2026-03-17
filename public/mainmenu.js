@@ -35,10 +35,7 @@ async function loadStats() {
     document.getElementById('spinnerStat').style.display = "block";
     document.getElementById('spinnerStat2').style.display = "block";
     
-    try {
-        const usuario = obtenerUsuario();
-        if (!usuario) return;
-        
+    try {        
         // ✅ Usar apiFetch que ya maneja tokens y URL base
         const stats = await apiFetch("/api/estadisticas/globales");
         
@@ -47,7 +44,7 @@ async function loadStats() {
         if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
         
         const listo = stats.por_estado?.find(e => 
-            e.estado === 'listo' || e.estado === 'terminado'
+            e.estado === 'listo' || e.estado === 'progreso'
         );
         
         if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
