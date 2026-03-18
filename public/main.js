@@ -1,7 +1,8 @@
+const usuario = obtenerUsuario();
 function check(){
-    if (sessionStorage.getItem("usuarioActual") && sessionStorage.getItem("userID")){
-        location.href = "/menu.html"
+    if (usuario) {
+            window.location.href = 'menu.html';
+            return;
+        }
     }
-}
-
 check();

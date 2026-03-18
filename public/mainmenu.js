@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setProps();
     loadAutos(); // Cargar autos al iniciar
 });
-
 function setProps() {
     const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
     const indiceAleatorio = Math.floor(Math.random() * opciones.length);
