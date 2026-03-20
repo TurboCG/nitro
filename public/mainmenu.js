@@ -366,16 +366,8 @@ function switchTab(targetTab) {
     
     // Aplicar animaciones
     if (goingToHistory) {
-        // Main sale hacia la izquierda
-        mainTab.classList.add('slide-out-left');
-        // Historia entra desde la derecha
-        historyTab.classList.add('slide-in-right');
         historyTab.style.display = 'flex';
     } else {
-        // Historia sale hacia la derecha
-        historyTab.classList.add('slide-out-right');
-        // Main entra desde la izquierda
-        mainTab.classList.add('slide-in-left');
         mainTab.style.display = 'flex';
     }
     
@@ -386,12 +378,8 @@ function switchTab(targetTab) {
     // Limpiar animaciones después de que terminen
     setTimeout(() => {
         if (goingToHistory) {
-            mainTab.classList.remove('slide-out-left');
-            historyTab.classList.remove('slide-in-right');
             mainTab.style.display = 'none';
         } else {
-            historyTab.classList.remove('slide-out-right');
-            mainTab.classList.remove('slide-in-left');
             historyTab.style.display = 'none';
         }
         
