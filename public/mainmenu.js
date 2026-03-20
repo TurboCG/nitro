@@ -116,10 +116,6 @@ function renderUltimosTresAutos(autos) {
         autoCard.onclick = () => verDetalleAuto(auto.id, auto.patente);
         
         autoCard.innerHTML = `
-            <div class="auto-actions">
-                <button onclick="editarAuto(${auto.id})">Editar</button>
-                <button onclick="eliminarAuto(${auto.id})">Eliminar</button>
-            </div>
             <div class="carEntry">
                 <img src="resources/car-brands/toyota.svg" class="carIcEntry" style="filter: brightness(0);">
                 <div class="doubleText">
