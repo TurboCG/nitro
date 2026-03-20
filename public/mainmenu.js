@@ -91,10 +91,6 @@ function renderAutos(autos) {
                 <p><strong>Problema:</strong> ${auto.problema}</p>
                 <p><strong>Ingreso:</strong> ${new Date(auto.fecha_ingreso).toLocaleDateString()}</p>
             </div>
-            <div class="auto-actions">
-                <button onclick="editarAuto(${auto.id})">Editar</button>
-                <button onclick="eliminarAuto(${auto.id})">Eliminar</button>
-            </div>
         `;
         container.appendChild(autoCard);
     });
