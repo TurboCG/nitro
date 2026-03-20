@@ -14,7 +14,6 @@
         <img src="resources/header_2.svg" alt="" srcset="" class="imageHeader">
         <img src="resources/pfp.png" alt="Opciones de la cuenta" srcset="" class="profile" id="ProfileButton">
     </div>
-    <!-- Contenedor para las transiciones -->
 <div class="tab-container">
     <div class="content main active-tab" id="mainTabContent">
         <h1><span id="saludo">¿Qué onda, </span><span id="nombreMecanico">Juan</span>?</h1>
@@ -28,21 +27,28 @@
                 <h1 class="numberCard" id="cars"><img src="resources/spinner.svg" class="spinner bigSpinner blackFilter" id="spinnerStat2"></h1>
             </div>
         </div>
-        <div class="doubleRoll">
-            <button class="BottomButton" id="addCarPiolaButton">Agregar Nuevo</button>
-            <button class="BottomButton buttonYellow" id="historialPiolaAutosButton">Historial</button>
+        <h3 class="lastAddedTitle">Ultimos agregados</h3>
+        <div class="carContainer">
+            <div class="carEntry">
+                <img src="resources/car-brands/toyota.svg" class="carIcEntry" style="filter: brightness(0);">
+                <div class="doubleText">
+                    <h2 class="titleEntry">ABC 123 456</h2>
+                    <h3 class="subEntry">2026/03/20</h3>
+                </div>
+            </div>
         </div>
-        <h3>Ultimos agregados</h3>
-        <div class="CarEntry"></div>
     </div>
     
     <div class="content history" id="historyTabContent">
         <h1>Historial</h1>
     </div>
 </div>
+    <div class="addButton" id="addCarPiolaButton">
+        <img src="resources/add.svg" alt="">
+    </div>
     <div class="navBar">
-        <img src="resources/home.svg" alt="" class="iconTab" id="homeButton">
-        <img src="resources/history.svg" alt="" class="iconTab" id="historyButton">
+        <div class="iconTab"><img src="resources/home.svg" alt="" class="iconTab" id="homeButton"><img><h6>Inicio</h4></div>
+        <div class="iconTab"><img src="resources/history.svg" alt="" class="iconTab" id="historyButton"> <h6>Historial</h4></div>
     </div>
     <div id="blackBlurBg"class="blackBG"></div>
     <div class="loginOptions closexpp" id="accountOptionsMenu" style="display: none;">
@@ -58,7 +64,7 @@
             <button class="optionCardButton">Reportar un error</button>
             <button class="optionCardButton">Acerca de...</button>
             <button class="optionCardButton bottomCorner">Cerrar sesión</button>
-            <h5>v.1.0.0-alpha turbo-mf-motores vv吴翔</h5>
+            <h5>v.1.0.0-alpha turbo-mf-motores</h5>
         </div>
     </div>
     <div class="loginOptions closexpp" id="carOptionsMenu" style="display: none;">
@@ -98,6 +104,19 @@
                 <button id="buttonCheckPost" type="button" class="accentColorButton"><span id="labelButton">Publicar</span><img src="resources/spinner.svg" class="spinner" id="spinner"></button>
             </div>
         </div>
+    </div>
+    <div class="carDetails" id="carDetails">
+        <div class="header">
+            <img src="resources/back.svg" alt="" srcset="" class="backButton headerMargins" id="backDetailsCar">
+            <h2>Detalles</h2>
+            
+        </div>
+        <div class="content center">
+            <div class="carLogoCard">
+                <img src="resources/car-brands/toyota.svg" class="brandingCar">
+            </div>
+        </div>
+        
     </div>
     <script src="config.js"></script>
     <script src="mainmenu.js"></script>

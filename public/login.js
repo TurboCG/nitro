@@ -44,7 +44,6 @@ async function login() {
             // ✅ NUEVO: Guardar token y usuario en localStorage
             guardarSesion(data.token, data.user);
             
-            mostrarExito(`¡Bienvenido ${data.user.nombre}!`);
             hideSpinner();
             window.location.href = 'menu.html';
         } else {
@@ -53,7 +52,8 @@ async function login() {
         }
     } catch(error) {
         console.error('Error en login:', error);
-        mostrarError('Error de conexión: ' + error.message);
+        document.getElementById("errorPassw").style.display = "flex";
+        
         hideSpinner();
     }
 }

@@ -16,7 +16,7 @@ function guardarSesion(token, user) {
 function cerrarSesion() {
     localStorage.removeItem(CONFIG.TOKEN_KEY);
     localStorage.removeItem(CONFIG.USER_KEY);
-    window.location.href = 'index.html'; // o login.html
+    //window.location.href = 'index.html'; // o login.html
 }
 
 function obtenerToken() {

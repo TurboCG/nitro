@@ -1,16 +1,14 @@
-// mainmenu.js - Versión migrada a JWT
 const nombreMecanico = document.getElementById('nombreMecanico');
 const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
 var isPublished = false;
 var tab = 0;
-let isTransitioning = false;
 
 // Verificar autenticación al cargar
 document.addEventListener('DOMContentLoaded', function() {
     const usuario = obtenerUsuario();
     if (!usuario) {
-        window.location.href = 'index.html';
+        //window.location.href = 'index.html';
         return;
     }
     setProps();
@@ -51,7 +49,7 @@ async function loadStats() {
     } catch(error) {
         console.error('Error cargando estadísticas:', error);
         if (error.message === 'Sesión expirada') {
-            window.location.href = 'index.html';
+            //window.location.href = 'index.html';
         }
     } finally {
         document.getElementById('spinnerStat').style.display = "none";
@@ -110,7 +108,7 @@ async function addCar() {
     try {
         const usuario = obtenerUsuario();
         if (!usuario) {
-            window.location.href = 'index.html';
+            //window.location.href = 'index.html';
             return;
         }
         
@@ -321,7 +319,7 @@ document.getElementById("confirmButtonToNext").onclick = loadCacheConfirm;
 document.getElementById("buttonCheckPost").onclick = addCar;
 document.getElementById("historyButton").onclick = historyT;
 document.getElementById("homeButton").onclick = mainT;
-document.getElementById("historialPiolaAutosButton").onclick = historyT;
+document.getElementById("backDetailsCar").onclick = hideShowDetails;
 
 // Tab functions
 function updateContent() {
@@ -355,20 +353,29 @@ function switchTab(targetTab) {
     if (targetTab == 0){
         document.getElementById("mainTabContent").style.display = "flex";
         document.getElementById("historyTabContent").style.display = "none";
+        document.getElementById("historyButton").style.opacity = 0.5;
+        document.getElementById("homeButton").style.opacity = 1;
     }else{
         document.getElementById("mainTabContent").style.display = "none";
         document.getElementById("historyTabContent").style.display = "flex";
+        document.getElementById("historyButton").style.opacity = 1;
+        document.getElementById("homeButton").style.opacity = 0.5;
     }
 }
 document.addEventListener('DOMContentLoaded', function() {
-    // ... tu código existente ...
-    
-    // Inicializar pestañas
     const mainTab = document.getElementById('mainTabContent');
     const historyTab = document.getElementById('historyTabContent');
     
     mainTab.style.display = 'flex';
     historyTab.style.display = 'none';
     tab = 0;
-
 });
+
+function hideShowDetails() {
+    const mainTab = document.getElementById('carDetails');  
+    if (mainTab.style.display == "none"){
+        mainTab.style.display = "block";
+    }else{
+        mainTab.style.display = "none";
+    }
+}
