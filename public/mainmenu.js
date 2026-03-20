@@ -100,7 +100,7 @@ function renderAutos(autos) {
     });
 }
 function renderUltimosTresAutos(autos) {
-    const container = document.getElementById('autosContainer'); 
+    const container = document.getElementById('carContainer'); 
     if (!container) return;
     
     container.innerHTML = '';
