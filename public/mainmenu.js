@@ -63,15 +63,14 @@ async function loadAutos() {
         if (!usuario) return;
         
         const autos = await apiFetch(`/api/autos?usuario_id=${usuario.id}`);
-        renderAutos(autos);
-        
+        renderUltimosTresAutos(autos);
     } catch(error) {
         console.error('Error cargando autos:', error);
     }
 }
 
 function renderAutos(autos) {
-    const container = document.getElementById('autosContainer'); // Asegúrate de tener este contenedor
+    const container = document.getElementById('carContainer'); // Asegúrate de tener este contenedor
     if (!container) return;
     
     container.innerHTML = '';
@@ -95,6 +94,42 @@ function renderAutos(autos) {
             <div class="auto-actions">
                 <button onclick="editarAuto(${auto.id})">Editar</button>
                 <button onclick="eliminarAuto(${auto.id})">Eliminar</button>
+            </div>
+        `;
+        container.appendChild(autoCard);
+    });
+}
+function renderUltimosTresAutos(autos) {
+    const container = document.getElementById('autosContainer'); 
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Ordenar por fecha de ingreso (más recientes primero)
+    const autosOrdenados = [...autos].sort((a, b) => {
+        return new Date(b.fecha_ingreso) - new Date(a.fecha_ingreso);
+    });
+    
+    // Tomar los primeros 3 (más recientes)
+    const ultimosTres = autosOrdenados.slice(0, 3);
+    
+    ultimosTres.forEach(auto => {
+        const autoCard = document.createElement('div');
+        autoCard.className = 'auto-card';
+        
+        autoCard.onclick = () => verDetalleAuto(auto.id, auto.patente);
+        
+        autoCard.innerHTML = `
+            <div class="auto-actions">
+                <button onclick="editarAuto(${auto.id})">Editar</button>
+                <button onclick="eliminarAuto(${auto.id})">Eliminar</button>
+            </div>
+            <div class="carEntry">
+                <img src="resources/car-brands/toyota.svg" class="carIcEntry" style="filter: brightness(0);">
+                <div class="doubleText">
+                    <h2 class="titleEntry">${auto.patente}</h2>
+                    <h3 class="subEntry">${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
+                </div>
             </div>
         `;
         container.appendChild(autoCard);
@@ -379,3 +414,4 @@ function hideShowDetails() {
         mainTab.style.display = "none";
     }
 }
+document.getElementById('carDetails').style.display = "none";  
