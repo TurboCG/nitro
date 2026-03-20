@@ -352,47 +352,13 @@ function logout() {
 }
 
 function switchTab(targetTab) {
-    if (isTransitioning || tab === targetTab) return;
-    
-    isTransitioning = true;
-    
-    const mainTab = document.getElementById('mainTabContent');
-    const historyTab = document.getElementById('historyTabContent');
-    const homeBtn = document.getElementById('homeButton');
-    const historyBtn = document.getElementById('historyButton');
-    
-    // Determinar dirección de la animación
-    const goingToHistory = targetTab === 1; // 1 = historial, 0 = main
-    
-    // Aplicar animaciones
-    if (goingToHistory) {
-        historyTab.style.display = 'flex';
-    } else {
-        mainTab.style.display = 'flex';
+    if (targetTab == 0){
+        document.getElementById("mainTabContent").style.display = "flex";
+        document.getElementById("historyTabContent").style.display = "none";
+    }else{
+        document.getElementById("mainTabContent").style.display = "none";
+        document.getElementById("historyTabContent").style.display = "flex";
     }
-    
-    // Actualizar opacidad de botones
-    homeBtn.style.opacity = goingToHistory ? '0.5' : '1';
-    historyBtn.style.opacity = goingToHistory ? '1' : '0.5';
-    
-    // Limpiar animaciones después de que terminen
-    setTimeout(() => {
-        if (goingToHistory) {
-            mainTab.style.display = 'none';
-        } else {
-            historyTab.style.display = 'none';
-        }
-        
-        tab = targetTab;
-        isTransitioning = false;
-        
-        // Cargar contenido según la pestaña
-        if (targetTab === 1) {
-            loadHistory(); // Función para cargar el historial
-        } else {
-            loadAutos(); // Recargar autos si es necesario
-        }
-    }, 280); // Un poco menos que la duración de la animación
 }
 document.addEventListener('DOMContentLoaded', function() {
     // ... tu código existente ...
