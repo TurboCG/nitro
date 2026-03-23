@@ -479,7 +479,7 @@ function hideShowDetails(autoid) {
     }
     
     document.getElementById('carDetails').style.display = "none";  
-    const auto = autos.find(a => a.id === autoId);
+    const auto = totalAutos.find(a => a.id === autoId);
     
     if (!auto) {
         console.error('Auto no encontrado con ID:', autoId);
