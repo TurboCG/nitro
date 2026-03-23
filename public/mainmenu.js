@@ -480,10 +480,10 @@ function hideShowDetails(autoid) {
     }
     
     document.getElementById('carDetails').style.display = "none";  
-    const auto = globalAutos.find(a => a.id === autoId);
+    const auto = globalAutos.find(a => a.id === autoid);
     
     if (!auto) {
-        console.error('Auto no encontrado con ID:', autoId);
+        console.error('Auto no encontrado con ID:', autoid);
         return;
     }
     
