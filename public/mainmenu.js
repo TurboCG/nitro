@@ -98,43 +98,61 @@ async function loadAutos() {
 }
 
 function renderAutos(autos) {
-    const container = document.getElementById('historyContainer'); // Asegúrate de tener este contenedor
+    const container = document.getElementById('historyContainer');
     if (!container) return;
     
     container.innerHTML = '';
-    
-    autos.forEach(auto => {
+    let imgGeneric = "resources/car-brands/other.svg"
+        autos.forEach(auto => {
+        const autoCard = document.createElement('div');
+        
+        let imagenSrc = 'other.svg';
+        
         if (auto.marca) {
             const marcaNormalizada = auto.marca.toLowerCase().trim();
             
             if (mapaMarcas[marcaNormalizada]) {
-                imagenSrc = `resources/car-brands/${mapaMarcas[marcaNormalizada]}`;
+                imagenSrc = mapaMarcas[marcaNormalizada];
             } else {
+                let encontrado = false;
                 for (const [key, value] of Object.entries(mapaMarcas)) {
                     if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
-                        imagenSrc = `resources/car-brands/${value}`;
+                        imagenSrc = value;
+                        encontrado = true;
                         break;
                     }
                 }
+                if (!encontrado) {
+                    imagenSrc = 'other.svg';
+                }
             }
         }
-        const autoCard = document.createElement('div');
+        
         autoCard.className = 'auto-card';
         autoCard.innerHTML = `
-                <div class="carEntry historyEntry">
+            <div class="carEntry historyEntry">
                 <div class="logoCover">
                     <img src="resources/car-brands/${imagenSrc}" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
                 </div>
-                    <div class="doubleText marginTextDouble">
-                    <h2 class="titleEntry">${auto.marca}</h2>
+                <div class="doubleText marginTextDouble">
+                    <h2 class="titleEntry">${auto.marca || 'Marca no especificada'}</h2>
                     <h3 class="subEntry">Patente: ${auto.patente}</h3>
-                    <h3 class="subEntry">Modelo: ${auto.modelo}</h3>
+                    <h3 class="subEntry">Modelo: ${auto.modelo || 'No especificado'}</h3>
                     <h3 class="subEntry">Fecha: ${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
-                    <h3 class="subEntry">${auto.estado}</h3>
-                    <button class="historyDetailButton">Ver mas</button>
+                    <h3 class="subEntry">${auto.estado || 'Estado no especificado'}</h3>
+                    <button class="historyDetailButton">Ver más</button>
                 </div>
             </div>
         `;
+        
+        const button = autoCard.querySelector('.historyDetailButton');
+        if (button) {
+            button.onclick = (e) => {
+                e.stopPropagation();
+                verDetalleAuto(auto.id, auto.patente);
+            };
+        }
+        
         container.appendChild(autoCard);
     });
 }
@@ -158,7 +176,6 @@ function renderUltimosTresAutos(autos) {
         autoCard.onclick = () => verDetalleAuto(auto.id, auto.patente);
         if (auto.marca) {
             const marcaNormalizada = auto.marca.toLowerCase().trim();
-            
             if (mapaMarcas[marcaNormalizada]) {
                 imagenSrc = `resources/car-brands/${mapaMarcas[marcaNormalizada]}`;
             } else {
