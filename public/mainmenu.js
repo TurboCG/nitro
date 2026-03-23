@@ -3,6 +3,7 @@ const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
 var isPublished = false;
 var tab = 0;
+let globalAutos = [];
 const mapaMarcas = {
         'alfa romeo': 'alfa-romeo.svg',
         'alfa-romeo': 'alfa-romeo.svg',
@@ -88,14 +89,14 @@ async function loadAutos() {
     try {
         const usuario = obtenerUsuario();
         if (!usuario) return;
-        
         const autos = await apiFetch(`/api/autos?usuario_id=${usuario.id}`);
+        globalAutos = autos;
         renderUltimosTresAutos(autos);
         renderAutos(autos);
     } catch(error) {
         console.error('Error cargando autos:', error);
-    }
-}
+    }}
+
 
 function renderAutos(autos) {
     const container = document.getElementById('historyContainer');
@@ -479,7 +480,7 @@ function hideShowDetails(autoid) {
     }
     
     document.getElementById('carDetails').style.display = "none";  
-    const auto = totalAutos.find(a => a.id === autoId);
+    const auto = globalAutos.find(a => a.id === autoId);
     
     if (!auto) {
         console.error('Auto no encontrado con ID:', autoId);
