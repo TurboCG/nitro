@@ -123,10 +123,10 @@ function renderAutos(autos) {
         autoCard.innerHTML = `
                 <div class="carEntry historyEntry">
                 <div class="logoCover">
-                    <img src="resources/car-brands/bmw.svg" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
+                    <img src="resources/car-brands/${imagenSrc}" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
                 </div>
                     <div class="doubleText marginTextDouble">
-                    <h2 class="titleEntry">Toyota</h2>
+                    <h2 class="titleEntry">${auto.marca}</h2>
                     <h3 class="subEntry">Patente: ${auto.patente}</h3>
                     <h3 class="subEntry">Modelo: ${auto.modelo}</h3>
                     <h3 class="subEntry">Fecha: ${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
