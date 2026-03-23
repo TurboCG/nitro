@@ -556,3 +556,41 @@ h6 {
     gap: 10px;
     flex-direction: column;
 }
+
+.logoCover {
+    width: 20%;
+    background-color: #ff2e2e;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 20px;
+}
+
+.historyEntry{
+    padding: 0px;
+}
+
+.marginTextDouble {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 100%;
+}
+
+.brandingCarHistory {
+    width: 35px;
+}
+
+.historyDetailButton {
+    width: 95%;
+    border-radius: 12px;
+    height: 50px;
+    border: none;
+    background-color: #00000021;
+    font-size: 18px;
+}
+
+.label {
+    margin-bottom: 6px;
+}

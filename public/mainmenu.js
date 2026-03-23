@@ -3,7 +3,34 @@ const totalAutos = document.getElementById('cars');
 const autosPendientes = document.getElementById('carsD');
 var isPublished = false;
 var tab = 0;
-
+const mapaMarcas = {
+        'alfa romeo': 'alfa-romeo.svg',
+        'alfa-romeo': 'alfa-romeo.svg',
+        'audi': 'audi.svg',
+        'bmw': 'bmw.svg',
+        'chevrolet': 'chevrolet.svg',
+        'citroen': 'citroen.svg',
+        'dodge': 'dodge.svg',
+        'fiat': 'fiat.svg',
+        'ford': 'ford.svg',
+        'honda': 'honda.svg',
+        'hyundai': 'hyundai.svg',
+        'jeep': 'jeep.svg',
+        'jmc': 'jmc.svg',
+        'kia': 'kia.svg',
+        'mazda': 'mazda.svg',
+        'mini cooper': 'mini_cooper.svg',
+        'mini': 'mini_cooper.svg',
+        'mitsubishi': 'mitsubishi.svg',
+        'nissan': 'nissan.svg',
+        'peugeot': 'peugeot.svg',
+        'renault': 'renault.svg',
+        'saab': 'saab.svg',
+        'subaru': 'subaru.svg',
+        'toyota': 'toyota.svg',
+        'volkswagen': 'volkswagen.svg',
+        'xiaomi': 'xiaomi.svg'
+    };
 // Verificar autenticación al cargar
 document.addEventListener('DOMContentLoaded', function() {
     const usuario = obtenerUsuario();
@@ -76,20 +103,35 @@ function renderAutos(autos) {
     container.innerHTML = '';
     
     autos.forEach(auto => {
+        if (auto.marca) {
+            const marcaNormalizada = auto.marca.toLowerCase().trim();
+            
+            if (mapaMarcas[marcaNormalizada]) {
+                imagenSrc = `resources/car-brands/${mapaMarcas[marcaNormalizada]}`;
+            } else {
+                for (const [key, value] of Object.entries(mapaMarcas)) {
+                    if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
+                        imagenSrc = `resources/car-brands/${value}`;
+                        break;
+                    }
+                }
+            }
+        }
         const autoCard = document.createElement('div');
         autoCard.className = 'auto-card';
         autoCard.innerHTML = `
-            <div class="auto-header">
-                <h3>${auto.patente}</h3>
-                <span class="estado ${auto.estado}">${auto.estado}</span>
-            </div>
-            <div class="auto-details">
-                <p><strong>Marca:</strong> ${auto.marca}</p>
-                <p><strong>Modelo:</strong> ${auto.modelo}</p>
-                <p><strong>Año:</strong> ${auto.ano}</p>
-                <p><strong>KM:</strong> ${auto.kilometraje}</p>
-                <p><strong>Problema:</strong> ${auto.problema}</p>
-                <p><strong>Ingreso:</strong> ${new Date(auto.fecha_ingreso).toLocaleDateString()}</p>
+                <div class="carEntry historyEntry">
+                <div class="logoCover">
+                    <img src="resources/car-brands/bmw.svg" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
+                </div>
+                    <div class="doubleText marginTextDouble">
+                    <h2 class="titleEntry">Toyota</h2>
+                    <h3 class="subEntry">Patente: ${auto.patente}</h3>
+                    <h3 class="subEntry">Modelo: ${auto.modelo}</h3>
+                    <h3 class="subEntry">Fecha: ${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
+                    <h3 class="subEntry">${auto.estado}</h3>
+                    <button class="historyDetailButton">Ver mas</button>
+                </div>
             </div>
         `;
         container.appendChild(autoCard);
@@ -106,34 +148,7 @@ function renderUltimosTresAutos(autos) {
     });
     let imgGeneric = "resources/car-brands/other.svg"
     const ultimosTres = autosOrdenados.slice(0, 3);
-    const mapaMarcas = {
-        'alfa romeo': 'alfa-romeo.svg',
-        'alfa-romeo': 'alfa-romeo.svg',
-        'audi': 'audi.svg',
-        'bmw': 'bmw.svg',
-        'chevrolet': 'chevrolet.svg',
-        'citroen': 'citroen.svg',
-        'dodge': 'dodge.svg',
-        'fiat': 'fiat.svg',
-        'ford': 'ford.svg',
-        'honda': 'honda.svg',
-        'hyundai': 'hyundai.svg',
-        'jeep': 'jeep.svg',
-        'jmc': 'jmc.svg',
-        'kia': 'kia.svg',
-        'mazda': 'mazda.svg',
-        'mini cooper': 'mini_cooper.svg',
-        'mini': 'mini_cooper.svg',
-        'mitsubishi': 'mitsubishi.svg',
-        'nissan': 'nissan.svg',
-        'peugeot': 'peugeot.svg',
-        'renault': 'renault.svg',
-        'saab': 'saab.svg',
-        'subaru': 'subaru.svg',
-        'toyota': 'toyota.svg',
-        'volkswagen': 'volkswagen.svg',
-        'xiaomi': 'xiaomi.svg'
-    };
+    
 
     ultimosTres.forEach(auto => {
         const autoCard = document.createElement('div');
@@ -156,7 +171,7 @@ function renderUltimosTresAutos(autos) {
         }
         autoCard.innerHTML = `
             <div class="carEntry">
-                <img src="${imagenSrc}" class="carIcEntry" style="filter: brightness(0);">
+                <img src="${imagenSrc}" class="carIcEntry" style="filter: brightness(0);">  
                 <div class="doubleText">
                     <h2 class="titleEntry">${auto.patente}</h2>
                     <h3 class="subEntry">${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
