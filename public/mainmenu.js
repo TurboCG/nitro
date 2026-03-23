@@ -101,23 +101,62 @@ function renderUltimosTresAutos(autos) {
     
     container.innerHTML = '';
     
-    // Ordenar por fecha de ingreso (más recientes primero)
     const autosOrdenados = [...autos].sort((a, b) => {
         return new Date(b.fecha_ingreso) - new Date(a.fecha_ingreso);
     });
-    
-    // Tomar los primeros 3 (más recientes)
+    let imgGeneric = "resources/car-brands/other.svg"
     const ultimosTres = autosOrdenados.slice(0, 3);
-    
+    const mapaMarcas = {
+        'alfa romeo': 'alfa-romeo.svg',
+        'alfa-romeo': 'alfa-romeo.svg',
+        'audi': 'audi.svg',
+        'bmw': 'bmw.svg',
+        'chevrolet': 'chevrolet.svg',
+        'citroen': 'citroen.svg',
+        'dodge': 'dodge.svg',
+        'fiat': 'fiat.svg',
+        'ford': 'ford.svg',
+        'honda': 'honda.svg',
+        'hyundai': 'hyundai.svg',
+        'jeep': 'jeep.svg',
+        'jmc': 'jmc.svg',
+        'kia': 'kia.svg',
+        'mazda': 'mazda.svg',
+        'mini cooper': 'mini_cooper.svg',
+        'mini': 'mini_cooper.svg',
+        'mitsubishi': 'mitsubishi.svg',
+        'nissan': 'nissan.svg',
+        'peugeot': 'peugeot.svg',
+        'renault': 'renault.svg',
+        'saab': 'saab.svg',
+        'subaru': 'subaru.svg',
+        'toyota': 'toyota.svg',
+        'volkswagen': 'volkswagen.svg',
+        'xiaomi': 'xiaomi.svg'
+    };
+
     ultimosTres.forEach(auto => {
         const autoCard = document.createElement('div');
         autoCard.className = 'auto-card';
         
         autoCard.onclick = () => verDetalleAuto(auto.id, auto.patente);
-        
+        if (auto.marca) {
+            const marcaNormalizada = auto.marca.toLowerCase().trim();
+            
+            if (mapaMarcas[marcaNormalizada]) {
+                imagenSrc = `resources/car-brands/${mapaMarcas[marcaNormalizada]}`;
+            } else {
+                for (const [key, value] of Object.entries(mapaMarcas)) {
+                    if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
+                        imagenSrc = `resources/car-brands/${value}`;
+                        break;
+                    }
+                }
+            }
+        }
         autoCard.innerHTML = `
             <div class="carEntry">
-                <img src="resources/car-brands/toyota.svg" class="carIcEntry" style="filter: brightness(0);">
+                <img src="${imagenSrc}" class="carIcEntry" style="filter: brightness(0);">
                 <div class="doubleText">
                     <h2 class="titleEntry">${auto.patente}</h2>
                     <h3 class="subEntry">${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
