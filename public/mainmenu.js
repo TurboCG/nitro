@@ -97,7 +97,7 @@ async function loadAutos() {
 }
 
 function renderAutos(autos) {
-    const container = document.getElementById('carContainer'); // Asegúrate de tener este contenedor
+    const container = document.getElementById('historyContainer'); // Asegúrate de tener este contenedor
     if (!container) return;
     
     container.innerHTML = '';
