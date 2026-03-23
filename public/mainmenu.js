@@ -149,7 +149,7 @@ function renderAutos(autos) {
         if (button) {
             button.onclick = (e) => {
                 e.stopPropagation();
-                verDetalleAuto(auto.id, auto.patente);
+                hideShowDetails(auto.id);
             };
         }
         
@@ -470,12 +470,21 @@ document.addEventListener('DOMContentLoaded', function() {
     tab = 0;
 });
 
-function hideShowDetails() {
+function hideShowDetails(autoid) {
     const mainTab = document.getElementById('carDetails');  
     if (mainTab.style.display == "none"){
         mainTab.style.display = "block";
     }else{
         mainTab.style.display = "none";
     }
+    
+    document.getElementById('carDetails').style.display = "none";  
+    const auto = autos.find(a => a.id === autoId);
+    
+    if (!auto) {
+        console.error('Auto no encontrado con ID:', autoId);
+        return;
+    }
+    
+    console.log("Auto piola detectado: ", auto)
 }
-document.getElementById('carDetails').style.display = "none";  
