@@ -75,6 +75,7 @@ body {
     background-color: #ff0000;
     justify-content: center;
     align-content: center;
+    position: fixed;
     border-radius: 200px;
 }
 .navBar {
@@ -121,7 +122,7 @@ h1, h3 {
     background-color: rgba(242, 242, 242, 0.76);
     /* justify-items: center; */
     justify-content: center;
-    
+    position: fixed;
     padding: 20px;
 }
 
