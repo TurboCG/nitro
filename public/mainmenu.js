@@ -479,7 +479,7 @@ function hideShowDetails(autoid) {
         return;
     }
     
-    if (!autoid) {
+    if (autoid == "") {
         mainTab.style.display = mainTab.style.display === "none" || mainTab.style.display === "" ? "block" : "none";
         return;
     }
@@ -493,7 +493,6 @@ function hideShowDetails(autoid) {
     
     if (!auto) {
         console.error('Auto no encontrado con ID:', autoid);
-        alert('No se encontró el vehículo solicitado');
         return;
     }
     
@@ -512,7 +511,7 @@ function hideShowDetails(autoid) {
     updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
     updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
     updateElement("fechaDetail", `Fecha de entrada: ${auto.fecha_ingreso ? new Date(auto.fecha_ingreso).toLocaleDateString() : 'No especificada'}`);
-    updateElement("anoDetail", `Año: ${auto.anio || auto.ano || 'No especificado'}`);
+    updateElement("anoDetail", `Año: ${auto.ano || 'No especificado'}`);
     updateElement("patenteDetail", `Patente: ${auto.patente || 'No especificada'}`);
     updateElement("estadoDetail", `Estado: ${auto.estado || 'No especificado'}`);
     updateElement("kilometrajeDetail", `Kilometraje: ${auto.kilometraje ? auto.kilometraje.toLocaleString() + ' km' : 'No especificado'}`);
