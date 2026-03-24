@@ -490,11 +490,11 @@ function hideShowDetails(autoid) {
     
     console.log("Auto FACHA detectado: ", auto)
     console.log("Mostrando detalles del facha de ", auto, "...")
-    document.getElementById("marcaDetail").textContent = "Marca:", auto.marca
-    document.getElementById("modeloDetail").textContent = "Modelo:", auto.modelo
-    document.getElementById("fechaDetail").textContent = "Marca:", auto.fecha_ingreso
-    document.getElementById("anoDetail").textContent = "Marca:", auto.ano
-    document.getElementById("estadoDetail").textContent = "Marca:", auto.estado
-    document.getElementById("kilometrajeDetail").textContent = "Marca:", auto.kilometraje
-    document.getElementById("arreglosDetail").textContent = auto.problema
+    document.getElementById("marcaDetail").textContent = "Marca:", auto.marca;
+    document.getElementById("modeloDetail").textContent = "Modelo:", auto.modelo;
+    document.getElementById("fechaDetail").textContent = "Fecha de entrada:", auto.fecha_ingreso;
+    document.getElementById("anoDetail").textContent = "Año:", auto.ano;
+    document.getElementById("estadoDetail").textContent = "Estado:", auto.estado;
+    document.getElementById("kilometrajeDetail").textContent = "Kilometraje:", auto.kilometraje;
+    document.getElementById("arreglosDetail").textContent = auto.problema;
 }
