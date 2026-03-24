@@ -478,8 +478,9 @@ function hideShowDetails(autoid) {
     }else{
         mainTab.style.display = "none";
     }
-    
-    document.getElementById('carDetails').style.display = "none";  
+    if (!autoid) {
+        return;
+    }
     const auto = globalAutos.find(a => a.id === autoid);
     
     if (!auto) {
@@ -487,5 +488,13 @@ function hideShowDetails(autoid) {
         return;
     }
     
-    console.log("Auto piola detectado: ", auto)
+    console.log("Auto FACHA detectado: ", auto)
+    console.log("Mostrando detalles del facha de ", auto, "...")
+    document.getElementById("marcaDetail").textContent = "Marca:", auto.marca
+    document.getElementById("modeloDetail").textContent = "Modelo:", auto.modelo
+    document.getElementById("fechaDetail").textContent = "Marca:", auto.fecha_ingreso
+    document.getElementById("anoDetail").textContent = "Marca:", auto.ano
+    document.getElementById("estadoDetail").textContent = "Marca:", auto.estado
+    document.getElementById("kilometrajeDetail").textContent = "Marca:", auto.kilometraje
+    document.getElementById("arreglosDetail").textContent = auto.problema
 }
