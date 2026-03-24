@@ -473,17 +473,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function hideShowDetails(autoid) {
     const mainTab = document.getElementById('carDetails');
-    
+    mainTab.style.display = mainTab.style.display === "none" || mainTab.style.display === "" ? "block" : "none";
     if (!mainTab) {
         console.error('Elemento carDetails no encontrado');
         return;
     }
-    
-    if (autoid == "") {
-        mainTab.style.display = mainTab.style.display === "none" || mainTab.style.display === "" ? "block" : "none";
-        return;
-    }
-    
+
     if (!globalAutos || !Array.isArray(globalAutos)) {
         console.error('globalAutos no está definido o no es un array');
         return;
@@ -507,7 +502,26 @@ function hideShowDetails(autoid) {
             console.warn(`Elemento ${id} no encontrado en el DOM`);
         }
     };
-    
+    if (auto.marca) {
+            const marcaNormalizada = auto.marca.toLowerCase().trim();
+            
+            if (mapaMarcas[marcaNormalizada]) {
+                imagenSrc = mapaMarcas[marcaNormalizada];
+            } else {
+                let encontrado = false;
+                for (const [key, value] of Object.entries(mapaMarcas)) {
+                    if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
+                        imagenSrc = value;
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) {
+                    imagenSrc = 'other.svg';
+                }
+            }
+        }
+    document.getElementById("carLogo").src = imagenSrc;
     updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
     updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
     updateElement("fechaDetail", `Fecha de entrada: ${auto.fecha_ingreso ? new Date(auto.fecha_ingreso).toLocaleDateString() : 'No especificada'}`);
@@ -516,5 +530,4 @@ function hideShowDetails(autoid) {
     updateElement("estadoDetail", `Estado: ${auto.estado || 'No especificado'}`);
     updateElement("kilometrajeDetail", `Kilometraje: ${auto.kilometraje ? auto.kilometraje.toLocaleString() + ' km' : 'No especificado'}`);
     updateElement("arreglosDetail", `Arreglos: ${auto.problema || auto.arreglos || 'Sin arreglos registrados'}`);
-    
 }
