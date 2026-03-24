@@ -95,7 +95,7 @@ async function loadStats() {
         if (totalAutos) totalAutos.textContent = stats.total_autos || 0;
         
         const listo = stats.por_estado?.find(e => 
-            e.estado === 'listo' || e.estado === 'progreso'
+            e.estado === 'listo'
         );
         
         if (autosPendientes) autosPendientes.textContent = listo ? listo.cantidad : 0;
@@ -103,7 +103,7 @@ async function loadStats() {
     } catch(error) {
         console.error('Error cargando estadísticas:', error);
         if (error.message === 'Sesión expirada') {
-            //window.location.href = 'index.html';
+            window.location.href = 'index.html';
         }
     } finally {
         document.getElementById('spinnerStat').style.display = "none";
