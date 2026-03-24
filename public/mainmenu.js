@@ -503,24 +503,18 @@ function hideShowDetails(autoid) {
         }
     };
     if (auto.marca) {
-            const marcaNormalizada = auto.marca.toLowerCase().trim();
-            
-            if (mapaMarcas[marcaNormalizada]) {
-                imagenSrc = mapaMarcas[marcaNormalizada];
-            } else {
-                let encontrado = false;
-                for (const [key, value] of Object.entries(mapaMarcas)) {
-                    if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
-                        imagenSrc = value;
-                        encontrado = true;
-                        break;
-                    }
-                }
-                if (!encontrado) {
-                    imagenSrc = 'other.svg';
+        const marcaNormalizada = auto.marca.toLowerCase().trim();
+        if (mapaMarcas[marcaNormalizada]) {
+            imagenSrc = `resources/car-brands/${mapaMarcas[marcaNormalizada]}`;
+        } else {
+            for (const [key, value] of Object.entries(mapaMarcas)) {
+                if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
+                    imagenSrc = `resources/car-brands/${value}`;
+                    break;
                 }
             }
         }
+    }
     document.getElementById("carLogo").src = imagenSrc;
     updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
     updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
