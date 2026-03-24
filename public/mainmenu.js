@@ -501,28 +501,21 @@ function hideShowDetails(autoid) {
             console.warn(`Elemento ${id} no encontrado en el DOM`);
         }
     };
-    let imgGeneric = "resources/car-brands/other.svg"
-    let imagenSrc = 'other.svg';
-        if (auto.marca) {
-            const marcaNormalizada = auto.marca.toLowerCase().trim();
-            
-            if (mapaMarcas[marcaNormalizada]) {
-                imagenSrc = mapaMarcas[marcaNormalizada];
-            } else {
-                let encontrado = false;
-                for (const [key, value] of Object.entries(mapaMarcas)) {
-                    if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
-                        imagenSrc = value;
-                        encontrado = true;
-                        break;
-                    }
-                }
-                if (!encontrado) {
-                    imagenSrc = 'other.svg';
+    imagenSrc = "resources/car-brands/other.svg"
+    if (auto.marca) {
+        const marcaNormalizada = auto.marca.toLowerCase().trim();
+        if (mapaMarcas[marcaNormalizada]) {
+            imagenSrc = `resources/car-brands/${mapaMarcas[marcaNormalizada]}`;
+        } else {
+            for (const [key, value] of Object.entries(mapaMarcas)) {
+                if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
+                    imagenSrc = `resources/car-brands/${value}`;
+                    break;
                 }
             }
         }
-    document.getElementById("carLogo").src = "resources/car-brands/", imagenSrc;
+    }
+    document.getElementById("carLogo").src = imagenSrc;
     updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
     updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
     updateElement("fechaDetail", `Fecha de entrada: ${auto.fecha_ingreso ? new Date(auto.fecha_ingreso).toLocaleDateString() : 'No especificada'}`);
