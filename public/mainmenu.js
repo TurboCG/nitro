@@ -472,29 +472,50 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function hideShowDetails(autoid) {
-    const mainTab = document.getElementById('carDetails');  
-    if (mainTab.style.display == "none"){
-        mainTab.style.display = "block";
-    }else{
-        mainTab.style.display = "none";
-    }
-    if (!autoid) {
+    const mainTab = document.getElementById('carDetails');
+    
+    if (!mainTab) {
+        console.error('Elemento carDetails no encontrado');
         return;
     }
+    
+    if (!autoid) {
+        mainTab.style.display = mainTab.style.display === "none" || mainTab.style.display === "" ? "block" : "none";
+        return;
+    }
+    
+    if (!globalAutos || !Array.isArray(globalAutos)) {
+        console.error('globalAutos no está definido o no es un array');
+        return;
+    }
+    
     const auto = globalAutos.find(a => a.id === autoid);
     
     if (!auto) {
         console.error('Auto no encontrado con ID:', autoid);
+        alert('No se encontró el vehículo solicitado');
         return;
     }
     
-    console.log("Auto FACHA detectado: ", auto)
-    console.log("Mostrando detalles del facha de ", auto, "...")
-    document.getElementById("marcaDetail").textContent = "Marca:", auto.marca;
-    document.getElementById("modeloDetail").textContent = "Modelo:", auto.modelo;
-    document.getElementById("fechaDetail").textContent = "Fecha de entrada:", auto.fecha_ingreso;
-    document.getElementById("anoDetail").textContent = "Año:", auto.ano;
-    document.getElementById("estadoDetail").textContent = "Estado:", auto.estado;
-    document.getElementById("kilometrajeDetail").textContent = "Kilometraje:", auto.kilometraje;
-    document.getElementById("arreglosDetail").textContent = auto.problema;
+    console.log("Auto detectado: ", auto);
+    console.log("Mostrando detalles de:", auto.patente);
+    
+    const updateElement = (id, value, defaultValue = 'No especificado') => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value || defaultValue;
+        } else {
+            console.warn(`Elemento ${id} no encontrado en el DOM`);
+        }
+    };
+    
+    updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
+    updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
+    updateElement("fechaDetail", `Fecha de entrada: ${auto.fecha_ingreso ? new Date(auto.fecha_ingreso).toLocaleDateString() : 'No especificada'}`);
+    updateElement("anoDetail", `Año: ${auto.anio || auto.ano || 'No especificado'}`);
+    updateElement("patenteDetail", `Patente: ${auto.patente || 'No especificada'}`);
+    updateElement("estadoDetail", `Estado: ${auto.estado || 'No especificado'}`);
+    updateElement("kilometrajeDetail", `Kilometraje: ${auto.kilometraje ? auto.kilometraje.toLocaleString() + ' km' : 'No especificado'}`);
+    updateElement("arreglosDetail", `Arreglos: ${auto.problema || auto.arreglos || 'Sin arreglos registrados'}`);
+    
 }
