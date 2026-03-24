@@ -272,11 +272,11 @@ async function addCar() {
             document.getElementById('kilometrajeInput').value = '';
             document.getElementById('arreglosInput').value = '';
             document.getElementById('anoInput').value = '';
-            
             showHideAddCar();
-            mostrarExito('Auto agregado correctamente');
             loadAutos(); // Recargar lista
             loadStats(); // Actualizar estadísticas
+            renderAutos();
+            renderUltimosTresAutos();
         }
         
     } catch(error) {
