@@ -208,16 +208,16 @@ function renderAutos(autos) {
         autoCard.className = 'auto-card';
         autoCard.innerHTML = `
             <div class="carEntry historyEntry">
-                <div class="logoCover" style="background-color: ${colorX}20;">
+                <div class="logoCover" style="background-color: ${colorX}">
                     <img src="resources/car-brands/${imagenSrc}" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
                 </div>
                 <div class="doubleText marginTextDouble">
-                    <h2 class="titleEntry" style="color: ${colorX};">${auto.marca || 'Marca no especificada'}</h2>
+                    <h2 class="titleEntry">${auto.marca || 'Marca no especificada'}</h2>
                     <h3 class="subEntry">Patente: ${auto.patente}</h3>
                     <h3 class="subEntry">Modelo: ${auto.modelo || 'No especificado'}</h3>
                     <h3 class="subEntry">Fecha: ${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
-                    <h3 class="subEntry estado-texto" style="color: ${auto.estado === 'disponible' ? '#28a745' : '#dc3545'};">${auto.estado || 'Estado no especificado'}</h3>
-                    <button class="historyDetailButton" style="background-color: ${colorX};">Ver más</button>
+                    <h3 class="subEntry">${auto.estado || 'Estado no especificado'}</h3>
+                    <button class="historyDetailButton">Ver más</button>
                 </div>
             </div>
         `;
