@@ -4,6 +4,8 @@ const autosPendientes = document.getElementById('carsD');
 var isPublished = false;
 var tab = 0;
 let globalAutos = [];
+let autosFiltrados = []; // Autos después del filtro
+
 const coloresPorMarca = {
     'toyota': '#EB0A1E',      // Rojo Toyota
     'honda': '#E53E30',        // Rojo Honda
@@ -68,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setProps();
     loadAutos(); // Cargar autos al iniciar
 });
+mainT()
 function setProps() {
     const opciones = ["¿Todo bien, ", "¿Qué onda, ", "¿Todo piola, ", "¿Como va eso, ", "¿Va todo joya, "];
     const indiceAleatorio = Math.floor(Math.random() * opciones.length);
@@ -115,13 +118,48 @@ async function loadAutos() {
     try {
         const usuario = obtenerUsuario();
         if (!usuario) return;
+        
         const autos = await apiFetch(`/api/autos?usuario_id=${usuario.id}`);
-        globalAutos = autos;
-        renderUltimosTresAutos(autos);
+        
+        todosLosAutos = autos;
+        window.globalAutos = autos; 
+                renderUltimosTresAutos(autos);
         renderAutos(autos);
     } catch(error) {
         console.error('Error cargando autos:', error);
-    }}
+    }
+}
+
+function filtrarAutosPorPatente(busqueda) {
+    if (!todosLosAutos) return [];
+    
+    // Si la búsqueda está vacía, devolver todos
+    if (!busqueda || busqueda.trim() === '') {
+        return todosLosAutos;
+    }
+    
+    // Filtrar por patente (insensible a mayúsculas/minúsculas)
+    const busquedaLower = busqueda.toLowerCase().trim();
+    return todosLosAutos.filter(auto => 
+        auto.patente && auto.patente.toLowerCase().includes(busquedaLower)
+    );
+}
+
+
+function setupBuscador() {
+    const searchInput = document.querySelector('.search');
+    if (!searchInput) return;
+    
+    // Función que maneja la búsqueda
+    const handleSearch = (e) => {
+        const busqueda = e.target.value;
+        const autosFiltrados = filtrarAutosPorPatente(busqueda);
+        renderAutos(autosFiltrados);
+    };
+    
+    // Aplicar debounce de 300ms para mejor rendimiento
+    searchInput.addEventListener('input', debounce(handleSearch, 300));
+}
 
 
 function renderAutos(autos) {
@@ -129,13 +167,25 @@ function renderAutos(autos) {
     if (!container) return;
     
     container.innerHTML = '';
+    
+    // Mostrar mensaje si no hay resultados
+    if (autos.length === 0) {
+        container.innerHTML = `
+            <div class="no-results">
+                <p>No se encontraron vehículos con esa patente</p>
+            </div>
+        `;
+        return;
+    }
+    
     autos.forEach(auto => {
         const autoCard = document.createElement('div');
         
         let imagenSrc = 'other.svg';
-        var colorX
+        let colorX = obtenerColorMarca(auto.marca) || '#6C757D'; // Color por defecto
+        
         if (auto.marca) {
-            colorX = obtenerColorMarca(auto.marca)
+            colorX = obtenerColorMarca(auto.marca);
             const marcaNormalizada = auto.marca.toLowerCase().trim();
             
             if (mapaMarcas[marcaNormalizada]) {
@@ -158,16 +208,16 @@ function renderAutos(autos) {
         autoCard.className = 'auto-card';
         autoCard.innerHTML = `
             <div class="carEntry historyEntry">
-                <div class="logoCover" style="background-color: ${colorX}">
+                <div class="logoCover" style="background-color: ${colorX}20;">
                     <img src="resources/car-brands/${imagenSrc}" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
                 </div>
                 <div class="doubleText marginTextDouble">
-                    <h2 class="titleEntry">${auto.marca || 'Marca no especificada'}</h2>
+                    <h2 class="titleEntry" style="color: ${colorX};">${auto.marca || 'Marca no especificada'}</h2>
                     <h3 class="subEntry">Patente: ${auto.patente}</h3>
                     <h3 class="subEntry">Modelo: ${auto.modelo || 'No especificado'}</h3>
                     <h3 class="subEntry">Fecha: ${new Date(auto.fecha_ingreso).toLocaleDateString()}</h3>
-                    <h3 class="subEntry">${auto.estado || 'Estado no especificado'}</h3>
-                    <button class="historyDetailButton">Ver más</button>
+                    <h3 class="subEntry estado-texto" style="color: ${auto.estado === 'disponible' ? '#28a745' : '#dc3545'};">${auto.estado || 'Estado no especificado'}</h3>
+                    <button class="historyDetailButton" style="background-color: ${colorX};">Ver más</button>
                 </div>
             </div>
         `;
@@ -183,6 +233,23 @@ function renderAutos(autos) {
         container.appendChild(autoCard);
     });
 }
+
+// Inicializar el buscador cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    setupBuscador();
+});
+
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
+
 function renderUltimosTresAutos(autos) {
     const container = document.getElementById('carContainer'); 
     if (!container) return;
