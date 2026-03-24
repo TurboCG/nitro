@@ -103,8 +103,7 @@ function renderAutos(autos) {
     if (!container) return;
     
     container.innerHTML = '';
-    let imgGeneric = "resources/car-brands/other.svg"
-        autos.forEach(auto => {
+    autos.forEach(auto => {
         const autoCard = document.createElement('div');
         
         let imagenSrc = 'other.svg';
@@ -502,6 +501,7 @@ function hideShowDetails(autoid) {
             console.warn(`Elemento ${id} no encontrado en el DOM`);
         }
     };
+    let imgGeneric = "resources/car-brands/other.svg"
     let imagenSrc = 'other.svg';
         if (auto.marca) {
             const marcaNormalizada = auto.marca.toLowerCase().trim();
@@ -522,7 +522,7 @@ function hideShowDetails(autoid) {
                 }
             }
         }
-    document.getElementById("carLogo").src = imagenSrc;
+    document.getElementById("carLogo").src = "resources/car-brands/", imagenSrc;
     updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
     updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
     updateElement("fechaDetail", `Fecha de entrada: ${auto.fecha_ingreso ? new Date(auto.fecha_ingreso).toLocaleDateString() : 'No especificada'}`);
