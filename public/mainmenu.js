@@ -122,8 +122,8 @@ async function loadAutos() {
         const autos = await apiFetch(`/api/autos?usuario_id=${usuario.id}`);
         
         todosLosAutos = autos;
-        window.globalAutos = autos; 
-                renderUltimosTresAutos(autos);
+        globalAutos = autos; 
+        renderUltimosTresAutos(autos);
         renderAutos(autos);
     } catch(error) {
         console.error('Error cargando autos:', error);
