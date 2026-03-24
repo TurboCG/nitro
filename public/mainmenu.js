@@ -542,6 +542,7 @@ function hideShowDetails(autoid) {
             }
         }
     }
+    colorX = obtenerColorMarca(auto.marca)
     document.getElementById("carLogo").src = imagenSrc;
     updateElement("marcaDetail", `Marca: ${auto.marca || 'No especificada'}`);
     updateElement("modeloDetail", `Modelo: ${auto.modelo || 'No especificado'}`);
@@ -551,7 +552,7 @@ function hideShowDetails(autoid) {
     updateElement("estadoDetail", `Estado: ${auto.estado || 'No especificado'}`);
     updateElement("kilometrajeDetail", `Kilometraje: ${auto.kilometraje ? auto.kilometraje.toLocaleString() + ' km' : 'No especificado'}`);
     updateElement("arreglosDetail", `${auto.problema || auto.arreglos || 'Sin arreglos registrados'}`);
-    
+    document.getElementById("colorCard").style.backgroundColor = colorX;
 }
 
 function obtenerColorMarca(marca) {
