@@ -618,4 +618,5 @@ h6 {
 
 .gray {
     color: #6b6b6b;
+    text-wrap: wrap;
 }

@@ -4,6 +4,32 @@ const autosPendientes = document.getElementById('carsD');
 var isPublished = false;
 var tab = 0;
 let globalAutos = [];
+const coloresPorMarca = {
+    'toyota': '#EB0A1E',      // Rojo Toyota
+    'honda': '#E53E30',        // Rojo Honda
+    'ford': '#003478',         // Azul Ford
+    'chevrolet': '#BA0C2F',    // Rojo Chevrolet
+    'volkswagen': '#001E4D',   // Azul Volkswagen
+    'bmw': '#0066B1',          // Azul BMW
+    'audi': '#BB0A1E',         // Rojo Audi
+    'mercedes': '#000000',     // Negro Mercedes
+    'nissan': '#C41E3A',       // Rojo Nissan
+    'hyundai': '#002C6A',      // Azul Hyundai
+    'kia': '#CC0000',          // Rojo Kia
+    'mazda': '#101010',        // Negro Mazda
+    'subaru': '#013C6E',       // Azul Subaru
+    'jeep': '#1A3A3A',         // Verde militar
+    'renault': '#FFCC00',      // Amarillo Renault
+    'peugeot': '#0066CC',      // Azul Peugeot
+    'fiat': '#B22234',         // Rojo Fiat
+    'citroen': '#E30613',      // Rojo Citroën
+    'dodge': '#B22234',        // Rojo Dodge
+    'alfa romeo': '#6C2D2C',   // Rojo Alfa Romeo
+    'mitsubishi': '#D52B1E',   // Rojo Mitsubishi
+    'xiaomi': '#FF6900',       // Naranja Xiaomi
+    'default': '#6C757D'       // Gris por defecto
+};
+
 const mapaMarcas = {
         'alfa romeo': 'alfa-romeo.svg',
         'alfa-romeo': 'alfa-romeo.svg',
@@ -107,8 +133,9 @@ function renderAutos(autos) {
         const autoCard = document.createElement('div');
         
         let imagenSrc = 'other.svg';
-        
+        var colorX
         if (auto.marca) {
+            colorX = obtenerColorMarca(auto.marca)
             const marcaNormalizada = auto.marca.toLowerCase().trim();
             
             if (mapaMarcas[marcaNormalizada]) {
@@ -131,7 +158,7 @@ function renderAutos(autos) {
         autoCard.className = 'auto-card';
         autoCard.innerHTML = `
             <div class="carEntry historyEntry">
-                <div class="logoCover">
+                <div class="logoCover" style="background-color: ${colorX}">
                     <img src="resources/car-brands/${imagenSrc}" class="carIcEntry brandingCarHistory" style="filter: brightness(100);">  
                 </div>
                 <div class="doubleText marginTextDouble">
@@ -523,5 +550,26 @@ function hideShowDetails(autoid) {
     updateElement("patenteDetail", `Patente: ${auto.patente || 'No especificada'}`);
     updateElement("estadoDetail", `Estado: ${auto.estado || 'No especificado'}`);
     updateElement("kilometrajeDetail", `Kilometraje: ${auto.kilometraje ? auto.kilometraje.toLocaleString() + ' km' : 'No especificado'}`);
-    updateElement("arreglosDetail", `Arreglos: ${auto.problema || auto.arreglos || 'Sin arreglos registrados'}`);
+    updateElement("arreglosDetail", `${auto.problema || auto.arreglos || 'Sin arreglos registrados'}`);
+    
+}
+
+function obtenerColorMarca(marca) {
+    if (!marca) return coloresPorMarca.default;
+    
+    const marcaNormalizada = marca.toLowerCase().trim();
+    
+    // Buscar coincidencia exacta
+    if (coloresPorMarca[marcaNormalizada]) {
+        return coloresPorMarca[marcaNormalizada];
+    }
+    
+    // Buscar coincidencia parcial
+    for (const [key, color] of Object.entries(coloresPorMarca)) {
+        if (marcaNormalizada.includes(key) || key.includes(marcaNormalizada)) {
+            return color;
+        }
+    }
+    
+    return coloresPorMarca.default;
 }
