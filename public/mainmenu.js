@@ -180,10 +180,9 @@ function renderAutos(autos) {
     
     autos.forEach(auto => {
         const autoCard = document.createElement('div');
-        
         let imagenSrc = 'other.svg';
         let colorX = obtenerColorMarca(auto.marca) || '#6C757D'; // Color por defecto
-        
+        autoCard.onclick = () => verDetalleAuto(auto.id, auto.patente);
         if (auto.marca) {
             colorX = obtenerColorMarca(auto.marca);
             const marcaNormalizada = auto.marca.toLowerCase().trim();
@@ -513,7 +512,7 @@ document.getElementById("buttonCheckPost").onclick = addCar;
 document.getElementById("historyButton").onclick = historyT;
 document.getElementById("homeButton").onclick = mainT;
 document.getElementById("backDetailsCar").onclick = hideShowDetails;
-
+document.getElementById("cerrarSesionButtonFachaPiola").onclick = logout;
 // Tab functions
 function updateContent() {
     if (tab == 0) {
