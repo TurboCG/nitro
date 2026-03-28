@@ -141,9 +141,7 @@ async function agregarAuto() {
 }
 
 // Eliminar auto
-async function eliminarAuto(autoId) {
-    if(!confirm('¿Estás seguro de eliminar este auto?')) return;
-    
+async function eliminarAuto(autoId) {    
     try {
         const response = await fetch(`${API_URL}/api/autos/${autoId}?usuario_id=${usuarioActual.id}`, {
             method: 'DELETE'
@@ -163,10 +161,49 @@ async function eliminarAuto(autoId) {
     }
 }
 
-// Editar auto (simplificado - puedes expandir después)
-function editarAuto(autoId) {
-    alert('Función de editar - próximo paso! 🚧');
+function obtenerToken() {
+    return localStorage.getItem('token');
 }
+
+function obtenerUsuario() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+}
+
+function obtenerUsuarioId() {
+    const user = obtenerUsuario();
+    return user ? user.id : null;
+}
+
+async function editarAuto(autoId) {
+    try {
+        const token = obtenerToken();
+        const usuarioId = obtenerUsuarioId();
+        
+        const response = await fetch(`${API_URL}/autos/${autoId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...datosAuto,
+                usuario_id: usuarioId
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Error al actualizar el auto');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error en actualizarAutoCompleto:', error);
+        throw error;
+    }
+}
+
 
 // Cargar estadísticas
 async function cargarEstadisticas() {

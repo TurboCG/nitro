@@ -113,27 +113,4 @@ router.patch('/:id', async (req: AuthRequest, res) => {
   }
 });
 
-// DELETE /api/autos/:id
-router.delete('/:id', async (req: AuthRequest, res) => {
-  try {
-    const autoId = req.params.id;
-    const usuarioId = req.query.usuario_id;
-
-    const result = await query(
-      'DELETE FROM autos WHERE id=$1 AND usuario_id=$2',
-      [autoId, usuarioId]
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Auto no encontrado' });
-    }
-
-    res.json({ success: true, message: 'Auto eliminado' });
-  } catch (error) {
-    console.error('Error eliminando auto:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
-
-
 export default router;

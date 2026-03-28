@@ -28,7 +28,6 @@ async function login() {
         
         showSpinner();
         
-        // ⚠️ CAMBIO IMPORTANTE: Ya no usamos credentials: 'include'
         const response = await fetch(`${CONFIG.API_URL}/api/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -41,7 +40,6 @@ async function login() {
         const data = await response.json();
         
         if (data.success) {
-            // ✅ NUEVO: Guardar token y usuario en localStorage
             guardarSesion(data.token, data.user);
             
             hideSpinner();
