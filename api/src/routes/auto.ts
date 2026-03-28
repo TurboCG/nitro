@@ -61,5 +61,79 @@ router.delete('/:id', async (req: AuthRequest, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+router.patch('/:id', async (req: AuthRequest, res) => {
+  try {
+    const autoId = req.params.id;
+    const { usuario_id, ...campos } = req.body;
+    
+    const camposPermitidos = ['patente', 'marca', 'modelo', 'ano', 'problema', 'estado'];
+    const camposActualizar = [];
+    const valores = [];
+    let indice = 1;
+    
+    for (const [key, value] of Object.entries(campos)) {
+      if (camposPermitidos.includes(key) && value !== undefined) {
+        if (key === 'patente') {
+          camposActualizar.push(`${key}=$${indice}`);
+          valores.push(String(value).toUpperCase());
+        } else if (key === 'ano') {
+          camposActualizar.push(`ano=$${indice}`);
+          valores.push(value);
+        } else {
+          camposActualizar.push(`${key}=$${indice}`);
+          valores.push(value);
+        }
+        indice++;
+      }
+    }
+    
+    if (camposActualizar.length === 0) {
+      return res.status(400).json({ error: 'No se proporcionaron campos para actualizar' });
+    }
+    
+    valores.push(autoId, usuario_id);
+    
+    const queryText = `
+      UPDATE autos 
+      SET ${camposActualizar.join(', ')}
+      WHERE id=$${indice} AND usuario_id=$${indice + 1}
+      RETURNING id
+    `;
+    
+    const result = await query(queryText, valores);
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Auto no encontrado' });
+    }
+    
+    res.json({ success: true, message: 'Auto actualizado parcialmente' });
+  } catch (error) {
+    console.error('Error actualizando auto parcialmente:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// DELETE /api/autos/:id
+router.delete('/:id', async (req: AuthRequest, res) => {
+  try {
+    const autoId = req.params.id;
+    const usuarioId = req.query.usuario_id;
+
+    const result = await query(
+      'DELETE FROM autos WHERE id=$1 AND usuario_id=$2',
+      [autoId, usuarioId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Auto no encontrado' });
+    }
+
+    res.json({ success: true, message: 'Auto eliminado' });
+  } catch (error) {
+    console.error('Error eliminando auto:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 
 export default router;
